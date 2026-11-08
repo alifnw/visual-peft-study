@@ -19,7 +19,9 @@ Adapter counts exclude the common 36,143-parameter classifier: Linear 0, LoRA 36
 
 ## Audit existing data
 
-Reuse the prepared VTAB directory and pretrained checkpoint on the training node. The audit checks split metadata, decodes every training and validation image, and rejects identical training-validation image content. It reads test split metadata for overlap checks and does not open test images or generate test predictions.
+Reuse the prepared VTAB directory and pretrained checkpoint on the training node. The audit checks split metadata and decodes every training and validation image. It reads test split metadata for overlap checks and does not open test images or generate test predictions.
+
+The A100 audit found one exact cross-split duplicate: validation index 0 matches training index 564. The 199 remaining validation images still cover all 47 classes. Keep the original 800/200 split for reproduction tracking and also report results on the 199-image subset without this training duplicate. The audit records the paths, labels, hashes, and row mask. It rejects unexpected overlap counts and conflicting labels.
 
 ```bash
 .venv/bin/python scripts/audit_dtd.py
@@ -47,7 +49,7 @@ Run one training process at a time in this order. Linear establishes the referen
 .venv/bin/python scripts/train_validation.py --method convpass --config configs/dtd_convpass.json --output runs/dtd/convpass --reference-result runs/dtd/linear/result.json --trim-host-allocator
 ```
 
-The runner saves status.json, history.csv, last.pt, best.pt, provenance.json, and validation logits. A completed run has phase complete, 100 epochs, zero test images used, and validation_last.npz with logits shaped 200 x 47. Epoch 100 is the primary checkpoint. Best-validation checkpoints remain diagnostic.
+The runner saves status.json, history.csv, last.pt, best.pt, provenance.json, and validation logits. A completed run has phase complete, 100 epochs, zero test images used, and validation_last.npz with logits shaped 200 x 47. It also exports validation_last_without_training_duplicates.npz with 199 rows and their original validation indices. Report both evaluation subsets explicitly. The raw 200-image accuracy includes a training duplicate. Epoch 100 is the primary checkpoint. Best-validation checkpoints remain diagnostic.
 
 Append --resume to the same command after an interrupted run with last.pt. Preserve the original config. Startup and runtime resource guards remain enabled.
 

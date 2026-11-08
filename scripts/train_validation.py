@@ -330,6 +330,10 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
         targets = np.concatenate(target_values)
         assert logits.shape == (len(val_data), params.class_num) and np.isfinite(logits).all()
         np.savez_compressed(output / f"validation_{label}.npz", logits=logits, targets=targets)
+        if dataset_audit is not None and not smoke_check:
+            indices = np.array(dataset_audit["validation_indices_without_training_content"], dtype=np.int64)
+            np.savez_compressed(output / f"validation_{label}_without_training_duplicates.npz",
+                                logits=logits[indices], targets=targets[indices], validation_indices=indices)
         return float((logits.argmax(axis=1) == targets).mean() * 100)
 
     last_accuracy = export_predictions("last")
@@ -341,6 +345,17 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
     after = np.load(output / "validation_last_reloaded.npz")["logits"]
     assert np.array_equal(before, after)
     assert reloaded_last_accuracy == last_accuracy
+    overlap_summary = {}
+    if dataset_audit is not None and not smoke_check:
+        indices = np.asarray(dataset_audit["validation_indices_without_training_content"], dtype=np.int64)
+        with np.load(output / "validation_last.npz") as snapshot:
+            clean_accuracy = float((snapshot["logits"][indices].argmax(axis=1)
+                                    == snapshot["targets"][indices]).mean() * 100)
+        overlap_summary = {
+            "validation_training_duplicate_rows": len(dataset_audit["duplicate_validation_indices"]),
+            "validation_rows_without_training_content": len(indices),
+            "last_epoch_validation_without_training_duplicates_top1_percent": clean_accuracy,
+        }
     best_state = torch.load(output / "best.pt", map_location="cpu")
     restore_tuned(best_state["trainable_state"])
     best_accuracy = export_predictions("best")
@@ -363,6 +378,7 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
         "trainable_percent": trainable_parameters / total_parameters * 100,
         "primary_metric": None if smoke_check else "last_epoch_validation_top1_percent",
         "last_epoch_validation_top1_percent": last_accuracy,
+        **overlap_summary,
         "best_validation_top1_percent": best_accuracy,
         "best_validation_epoch": best["epoch"],
         "final_train_metrics": {k: history[-1]["train_" + k] for k in ("loss", "top1", "top5")},

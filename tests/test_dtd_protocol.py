@@ -24,6 +24,7 @@ class DTDProtocolTests(unittest.TestCase):
                 self.assertEqual(config["expected_class_count"], 47)
                 self.assertEqual(config["epochs"], 100)
                 self.assertEqual(config["seed"], 42)
+                self.assertEqual(config["expected_duplicate_validation_rows"], 1)
                 self.assertEqual(config["batch_size"] // config["microbatch_size"], 8)
                 self.assertEqual((config["learning_rate"], config["weight_decay"]), (lr, wd))
                 self.assertFalse(config["test_set_access"])
@@ -94,9 +95,28 @@ class DTDProtocolTests(unittest.TestCase):
             self.assertEqual(result["development_images_decoded"], {"train800.txt": 800, "val200.txt": 200})
             self.assertEqual(result["test_images_decoded"], 0)
             self.assertEqual(result["splits"]["test.txt"]["sampled_images_decoded"], 0)
-            (data / "image_800.png").write_bytes((data / "image_0.png").read_bytes())
+            (data / "image_800.png").write_bytes((data / "image_1.png").read_bytes())
             with self.assertRaisesRegex(ValueError, "identical"):
                 audit(root)
+            result = audit(root, expected_duplicate_validation_rows=1)
+            self.assertEqual(result["duplicate_validation_indices"], [0])
+            self.assertEqual(len(result["validation_indices_without_training_content"]), 199)
+            self.assertEqual(result["clean_validation_classes"], 47)
+
+    def test_declared_duplicate_requires_a_valid_validation_partition(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            config, audit, path = self.fixture(root)
+            config["expected_duplicate_validation_rows"] = 1
+            audit.update(train_val_identical_file_content_count=1,
+                         duplicate_validation_indices=[0],
+                         validation_indices_without_training_content=list(range(1, 200)))
+            path.write_text(json.dumps(audit))
+            self.assertEqual(len(validate_audit_manifest(config, root)["validation_indices_without_training_content"]), 199)
+            audit["validation_indices_without_training_content"][0] = 0
+            path.write_text(json.dumps(audit))
+            with self.assertRaises(ValueError):
+                validate_audit_manifest(config, root)
 
 
 if __name__ == "__main__":
