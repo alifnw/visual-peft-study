@@ -24,6 +24,7 @@ from gradient_accumulation import accumulated_step
 from resource_guard import snapshot as runtime_snapshot, stop_reason
 from peft_methods import METHODS, method_settings, is_method_parameter, expected_method_parameters
 from initialization_reference import load_reference_result, validate_initialization_reference
+from audit_dtd import validate_audit_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,7 +45,7 @@ def memory_guard(initial_oom):
         raise RuntimeError(reason + ". Stopping this run.")
 
 
-def run(config, method, output, initial, resume, resource_policy, reference_result=None):
+def run(config, method, output, initial, resume, resource_policy, reference_result=None, dataset_audit=None):
     import numpy as np
     import torch
     import timm
@@ -104,6 +105,8 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
     train_data = get_processed_VTAB(params, "train")
     val_data = get_processed_VTAB(params, "val")
     assert len(train_data) == 800 and len(val_data) == 200
+    if config.get("expected_class_count") is not None and params.class_num != config["expected_class_count"]:
+        raise ValueError("Upstream classifier class count differs from the dataset configuration")
     assert not config["test_set_access"]
     smoke_check = config.get("smoke_check", False)
     if smoke_check:
@@ -214,6 +217,8 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
 
     versions = {name: importlib.metadata.version(name) for name in ("torch", "torchvision", "timm", "numpy", "Pillow")}
     provenance = {
+        "dataset": config["dataset"], "class_count": params.class_num,
+        "dataset_audit": dataset_audit,
         "source_commit": subprocess.check_output(["git", "-C", str(ROOT / "code"), "rev-parse", "HEAD"], text=True).strip(),
         "tracked_source_diff": subprocess.check_output(["git", "-C", str(ROOT / "code"), "diff"], text=True),
         "python": sys.version,
@@ -253,7 +258,7 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
             "Python 3.10 instead of the setup script's Python 3.7",
             "Zero data-loader workers and no pinned CPU memory",
             f"Validation batch size {config['validation_batch_size']} instead of 512",
-            "Validation recorded after every epoch, fixed 100-epoch budget without early stopping",
+            f"Validation recorded after every epoch, fixed {config['epochs']}-epoch budget without early stopping",
             "Classifier reset with its own seed and independently seeded per-epoch sampler",
             "Native train_one_epoch, optimizer and cosine scheduler are reused",
             ("Training uses sample-weighted gradient accumulation, one optimizer update per effective batch. "
@@ -343,6 +348,7 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
     final_resources = resource_state()
     result = {
         "phase": "complete", "method": method, "dataset": config["dataset"],
+        "class_count": params.class_num,
         "purpose": config["purpose"], "seed": seed, "epochs": len(history),
         "smoke_check": smoke_check,
         **({"quality_score": None} if smoke_check else {}),
@@ -387,6 +393,8 @@ def main():
     parser.add_argument("--method", required=True, choices=METHODS)
     parser.add_argument("--output", required=True)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--smoke-check", action="store_true",
+                        help="Run two integration epochs on four development images without reporting a benchmark score.")
     parser.add_argument("--reference-result", type=Path,
                         help="Optional result JSON used to compare initial classifier and backbone hashes.")
     parser.add_argument("--skip-startup-ram-check", action="store_true",
@@ -396,7 +404,12 @@ def main():
     args = parser.parse_args()
     config_path = ROOT / args.config
     config = json.loads(config_path.read_text())
+    if args.smoke_check:
+        config.update(smoke_check=True, epochs=2, batch_size=4, microbatch_size=2,
+                      validation_batch_size=4, warmup_epochs=0,
+                      purpose="integration_smoke_test_not_benchmark")
     method_settings(config, args.method)
+    dataset_audit = validate_audit_manifest(config, ROOT)
     reference_path = args.reference_result
     if reference_path is not None and not reference_path.is_absolute():
         reference_path = ROOT / reference_path
@@ -445,7 +458,7 @@ def main():
         return 3
     try:
         memory_guard(initial["oom_kill_count"])
-        run(config, args.method, output, initial, args.resume, resource_policy, reference_result)
+        run(config, args.method, output, initial, args.resume, resource_policy, reference_result, dataset_audit)
     except Exception as exc:
         status.update(phase="failed", error=repr(exc), traceback=traceback.format_exc())
         save(output / "status.json", status)

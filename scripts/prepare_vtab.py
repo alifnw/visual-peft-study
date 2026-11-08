@@ -11,7 +11,6 @@ import subprocess
 import time
 import zipfile
 
-from huggingface_hub import hf_hub_download
 from PIL import Image
 
 
@@ -89,7 +88,7 @@ def extract_archive(archive):
     return target
 
 
-def validate_dataset(root, name, classes):
+def validate_dataset(root, name, classes, decode_test_images=True):
     directory = root / name
     summary = {"classes_expected": classes, "splits": {}}
     split_records = {}
@@ -116,7 +115,7 @@ def validate_dataset(root, name, classes):
         if not records:
             raise RuntimeError(f"Empty split {name}/{filename}")
         step = max(1, len(records) // 10)
-        sampled = records[::step][:10]
+        sampled = [] if filename == "test.txt" and not decode_test_images else records[::step][:10]
         for image_path, _ in sampled:
             with Image.open(directory / image_path) as image:
                 image.load()
@@ -153,6 +152,8 @@ def validate_dataset(root, name, classes):
 def main(validate_only=False):
     archive = ROOT / "data" / "archives" / FILENAME
     if not validate_only:
+        from huggingface_hub import hf_hub_download
+
         phase("downloading", source_repo=REPO_ID, revision=REVISION, expected_bytes=EXPECTED_BYTES)
         archive = Path(hf_hub_download(
             repo_id=REPO_ID,

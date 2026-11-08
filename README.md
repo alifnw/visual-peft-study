@@ -1,4 +1,4 @@
-# Visual PEFT on Flowers102
+# Visual PEFT Study
 
 **Kelompok 1: Alif Negifta Wibawaputra, Charleen Samaeri Gulo**
 
@@ -8,7 +8,11 @@ The [notebook](notebooks/01_flowers102_checkpoint1.ipynb) reports the research s
 
 Research question: under a fixed training configuration, how do Linear, LoRA and SSF differ in probability quality and prediction errors despite achieving the same validation accuracy?
 
-## Progress
+## DTD baseline preparation
+
+Four DTD recipes are available for Linear, LoRA, SSF, and ConvPass, using a new 47-class classifier. The data audit, configuration settings, ordered training commands, and output checks are documented in the [DTD protocol](docs/DTD_PROTOCOL.md). No completed DTD results have been recorded in this checkout.
+
+## Flowers102: Checkpoint 1 progress
 
 - Linear probing, LoRA and SSF completed 100 epochs on the same 800-image training and 200-image validation split.
 - Stored logits, histories, initialization hashes and checkpoint-reload predictions were checked.
@@ -77,7 +81,7 @@ This is a fixed-configuration, single-seed comparison on one VTAB-1K task. Twelv
 
 Test metadata and sample files were checked during integrity preparation. Test data were not used for training, configuration selection or performance evaluation. Validation scores are not directly comparable with the paper's tuned and retrained test results. Runtime and memory logs come from shared-node conditions.
 
-Selective fusion is the primary proposed extension. Its controls include calibrated single models, same-method seed ensembles and always-on fusion. Both Linear and LoRA run a full ViT, so any quality-latency benefit requires direct measurement. Other proposals cover class-preserving weighting under controlled label noise and resource-aware recipe selection. Their evaluation plans and literature context are in [research directions](docs/RESEARCH_DIRECTIONS.md). None has been evaluated yet.
+The CP1 research proposals include selective fusion, class-preserving weighting under controlled label noise, and resource-aware recipe selection. Their evaluation plans and literature context are retained in [research directions](docs/RESEARCH_DIRECTIONS.md). The extension direction is being reconsidered while DTD baselines are prepared. None of these interventions has been evaluated yet.
 
 ## Sources
 
