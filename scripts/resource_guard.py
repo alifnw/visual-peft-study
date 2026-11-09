@@ -21,6 +21,7 @@ def estimate(limit, used, stats, events, full_pressure_avg10=0.0):
         "runtime_headroom_gib": (conservative + active_credit) / GIB,
         "resident_headroom_gib": resident_ceiling / GIB,
         "active_clean_file_bytes": active_clean,
+        "inactive_file_bytes": stats.get("inactive_file", 0),
         "active_cache_credit_bytes": active_credit,
         "cache_credit_fraction": ACTIVE_CREDIT_FRACTION,
         "cache_credit_cap_bytes": ACTIVE_CREDIT_CAP,
@@ -31,17 +32,61 @@ def estimate(limit, used, stats, events, full_pressure_avg10=0.0):
     }
 
 
-def snapshot():
-    root = Path("/sys/fs/cgroup")
-    stats = {k: int(v) for k, v in (line.split() for line in (root / "memory.stat").read_text().splitlines())}
-    events = {k: int(v) for k, v in (line.split() for line in (root / "memory.events").read_text().splitlines())}
+def _pressure(path):
     full_pressure = 0.0
-    for line in (root / "memory.pressure").read_text().splitlines():
+    if not path.exists():
+        return full_pressure
+    for line in path.read_text().splitlines():
         if line.startswith("full "):
             values = dict(word.split("=") for word in line.split()[1:])
             full_pressure = float(values["avg10"])
-    return estimate(int((root / "memory.max").read_text()),
-                    int((root / "memory.current").read_text()), stats, events, full_pressure)
+    return full_pressure
+
+
+def snapshot(cgroup_root=Path("/sys/fs/cgroup"), proc_root=Path("/proc")):
+    cgroup_root, proc_root = Path(cgroup_root), Path(proc_root)
+    meminfo = {line.split(":", 1)[0]: int(line.split()[1]) * 1024
+               for line in (proc_root / "meminfo").read_text().splitlines()
+               if line.split(":", 1)[0] in {"MemTotal", "MemAvailable"}}
+    total, available = meminfo["MemTotal"], meminfo["MemAvailable"]
+    host = estimate(total, total - available, {"anon": total - available}, {},
+                    _pressure(proc_root / "pressure/memory"))
+    host.update(scope="host_memavailable", definition="Host MemAvailable from /proc/meminfo")
+    states, directories = [host], {cgroup_root}
+    for line in (proc_root / "self/cgroup").read_text().splitlines():
+        if line.startswith("0::"):
+            relative = Path(line[3:].lstrip("/"))
+            if ".." not in relative.parts:
+                current = cgroup_root / relative
+                while current.is_relative_to(cgroup_root):
+                    directories.add(current)
+                    if current == cgroup_root:
+                        break
+                    current = current.parent
+    for directory in sorted(directories):
+        limit_path = directory / "memory.max"
+        if not limit_path.exists() or limit_path.read_text().strip() == "max":
+            continue
+        stats = {k: int(v) for k, v in
+                 (line.split() for line in (directory / "memory.stat").read_text().splitlines())}
+        events = {k: int(v) for k, v in
+                  (line.split() for line in (directory / "memory.events").read_text().splitlines())}
+        state = estimate(int(limit_path.read_text()),
+                         int((directory / "memory.current").read_text()), stats, events,
+                         _pressure(directory / "memory.pressure"))
+        state["scope"] = str(directory)
+        states.append(state)
+    result = dict(min(states, key=lambda state: state["runtime_headroom_gib"]))
+    for key in ["headroom_gib", "runtime_headroom_gib", "resident_headroom_gib"]:
+        result[key] = min(state[key] for state in states)
+    for key in ["oom_kill_count", "oom_count"]:
+        result[key] = sum(state[key] for state in states)
+    result["full_pressure_avg10_percent"] = max(state["full_pressure_avg10_percent"] for state in states)
+    result["host_memavailable_bytes"] = available
+    result["limits_checked"] = [{key: state[key] for key in
+                                 ("scope", "limit_bytes", "used_bytes", "headroom_gib")}
+                                for state in states]
+    return result
 
 
 def stop_reason(state, initial_oom_kills, initial_oom_count=None):

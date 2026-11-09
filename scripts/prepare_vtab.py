@@ -52,8 +52,9 @@ def expected_datasets():
     raise RuntimeError("Cannot locate VTAB_DATASETS in the pinned official code")
 
 
-def extract_archive(archive):
+def extract_archive(archive, datasets=None):
     target = ROOT / "data" / "vtab_processed"
+    target.mkdir(parents=True, exist_ok=True)
     if any(target.iterdir()):
         raise RuntimeError("Extraction target is nonempty. Preserve it and inspect before rerunning")
     with zipfile.ZipFile(archive) as zipped:
@@ -63,6 +64,12 @@ def extract_archive(archive):
         prefix = next(iter(first_parts)) if len(first_parts) == 1 else None
         if prefix not in {"vtab-1k", "vtab_processed", "vtab-1k-combined"}:
             prefix = None
+        if datasets:
+            selected = set(datasets)
+            image_entries = [entry for entry in image_entries
+                             if PurePosixPath(entry.filename).parts[1 if prefix else 0] in selected]
+            if not image_entries:
+                raise RuntimeError("Requested datasets are absent from the pinned archive")
         total = sum(entry.file_size for entry in image_entries)
         free = shutil.disk_usage(target).free
         if free < total + 1024**3:
@@ -149,9 +156,13 @@ def validate_dataset(root, name, classes, decode_test_images=True):
     return summary
 
 
-def main(validate_only=False):
+def main(validate_only=False, datasets=None):
     archive = ROOT / "data" / "archives" / FILENAME
-    if not validate_only:
+    choices = expected_datasets()
+    selected = list(dict.fromkeys(datasets)) if datasets else list(choices)
+    if any(name not in choices for name in selected):
+        raise ValueError("Unknown VTAB dataset requested")
+    if not validate_only and not archive.exists():
         from huggingface_hub import hf_hub_download
 
         phase("downloading", source_repo=REPO_ID, revision=REVISION, expected_bytes=EXPECTED_BYTES)
@@ -167,11 +178,11 @@ def main(validate_only=False):
     observed_sha = sha256(archive)
     if archive.stat().st_size != EXPECTED_BYTES or observed_sha != EXPECTED_SHA256:
         raise RuntimeError("Downloaded archive does not match its published size/SHA-256")
-    root = ROOT / "data" / "vtab_processed" if validate_only else extract_archive(archive)
+    root = ROOT / "data" / "vtab_processed" if validate_only else extract_archive(archive, selected)
     phase("validating")
     results = {}
-    for name, classes in expected_datasets().items():
-        results[name] = validate_dataset(root, name, classes)
+    for name in selected:
+        results[name] = validate_dataset(root, name, choices[name], decode_test_images=False)
     manifest = {
         "source_repo": REPO_ID,
         "source_url": "https://huggingface.co/datasets/" + REPO_ID,
@@ -182,9 +193,10 @@ def main(validate_only=False):
         "official_code_commit": subprocess.check_output(["git", "-C", str(ROOT / "code"), "rev-parse", "HEAD"], text=True).strip(),
         "data_path": str(root),
         "dataset_count": len(results),
+        "datasets_requested": selected,
         "datasets": results,
         "provenance_note": "Community mirror. Author SharePoint archive returned HTTP 404. Split identity with the authors' seed-9526 archive is not verified. Do not claim an exact published-score reproduction on this evidence alone.",
-        "validation_scope": "All referenced paths, label bounds, row counts and path overlaps checked. Combined train/validation file content and labels checked by SHA-256 multiset union. Training/validation identical-file counts recorded. ZIP member CRC checked while extracting. Up to ten images per split fully decoded. Content-level train/test duplicate detection not performed.",
+        "validation_scope": "For the requested datasets, all referenced paths, label bounds, row counts and path overlaps checked. Combined train/validation file content and labels checked by SHA-256 multiset union. Training/validation identical-file counts recorded. Selected ZIP member CRC checked while extracting. Up to ten images per development split fully decoded. Test images are not decoded. Content-level train/test duplicate detection not performed.",
         "license_note": "Observe the licenses and access conditions of each original VTAB component dataset. The mirror has no dataset card establishing an umbrella license.",
     }
     save_json(ROOT / "manifests" / "vtab_manifest.json", manifest)
@@ -194,9 +206,10 @@ def main(validate_only=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--validate-only", action="store_true")
+    parser.add_argument("--dataset", action="append", help="Extract and validate only this VTAB dataset. Repeat to select several.")
     arguments = parser.parse_args()
     try:
-        main(validate_only=arguments.validate_only)
+        main(validate_only=arguments.validate_only, datasets=arguments.dataset)
     except Exception as error:
         phase("failed", error_type=type(error).__name__, message=str(error))
         raise

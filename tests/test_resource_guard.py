@@ -1,9 +1,10 @@
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from resource_guard import GIB, estimate, stop_reason
+from resource_guard import GIB, estimate, snapshot, stop_reason
 
 
 class ResourceGuardTests(unittest.TestCase):
@@ -37,6 +38,44 @@ class ResourceGuardTests(unittest.TestCase):
     def test_critical_headroom_is_not_allowed(self):
         state = estimate(16 * GIB, 16 * GIB, {}, {})
         self.assertIn("0.35", stop_reason(state, 0))
+
+    def fixture(self, directory):
+        proc, cgroup = Path(directory) / "proc", Path(directory) / "cgroup"
+        (proc / "self").mkdir(parents=True)
+        cgroup.mkdir()
+        (proc / "meminfo").write_text(f"MemTotal: {64 * 1024**2} kB\nMemAvailable: {40 * 1024**2} kB\n")
+        (proc / "self/cgroup").write_text("0::/user.slice/session.scope\n")
+        return proc, cgroup
+
+    def write_limit(self, directory, limit, used):
+        directory.mkdir(parents=True, exist_ok=True)
+        for name, text in {"memory.max": str(limit), "memory.current": str(used),
+                           "memory.stat": f"anon {used}\n", "memory.events": "oom 0\noom_kill 0\n"}.items():
+            (directory / name).write_text(text)
+
+    def test_bare_metal_without_root_controller_uses_host_available(self):
+        with tempfile.TemporaryDirectory() as directory:
+            proc, cgroup = self.fixture(directory)
+            self.write_limit(cgroup / "user.slice/session.scope", "max", GIB)
+            state = snapshot(cgroup, proc)
+            self.assertEqual(state["scope"], "host_memavailable")
+            self.assertEqual(state["headroom_gib"], 40)
+
+    def test_parent_limit_applies_to_an_unlimited_session(self):
+        with tempfile.TemporaryDirectory() as directory:
+            proc, cgroup = self.fixture(directory)
+            self.write_limit(cgroup / "user.slice/session.scope", "max", GIB)
+            self.write_limit(cgroup / "user.slice", 16 * GIB, 15 * GIB)
+            state = snapshot(cgroup, proc)
+            self.assertEqual(state["headroom_gib"], 1)
+            self.assertEqual(state["resident_headroom_gib"], 1)
+
+    def test_container_root_limit_remains_enforced(self):
+        with tempfile.TemporaryDirectory() as directory:
+            proc, cgroup = self.fixture(directory)
+            self.write_limit(cgroup, 16 * GIB, 14 * GIB)
+            state = snapshot(cgroup, proc)
+            self.assertEqual(state["headroom_gib"], 2)
 
 
 if __name__ == "__main__":

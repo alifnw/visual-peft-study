@@ -12,6 +12,8 @@ import sys
 import time
 import traceback
 
+from resource_guard import snapshot as memory_snapshot
+
 
 ROOT = Path(__file__).resolve().parents[1]
 GIB = 1024 ** 3
@@ -24,24 +26,25 @@ def save(path, content):
 
 
 def resource_state():
-    base = Path("/sys/fs/cgroup")
-    stats = dict(line.split() for line in (base / "memory.stat").read_text().splitlines())
-    used = int((base / "memory.current").read_text())
-    raw_limit = (base / "memory.max").read_text().strip()
-    limit = int(raw_limit) if raw_limit != "max" else None
-    inactive = int(stats.get("inactive_file", 0))
-    events = dict(line.split() for line in (base / "memory.events").read_text().splitlines())
+    memory = memory_snapshot()
+    gpu_selector = os.environ.get("CUDA_VISIBLE_DEVICES", "0").split(",")[0]
+    if not gpu_selector:
+        raise RuntimeError("CUDA_VISIBLE_DEVICES does not expose a GPU")
     gpu = subprocess.check_output([
-        "nvidia-smi", "--query-gpu=memory.used,memory.total,utilization.gpu",
+        "nvidia-smi", "--id=" + gpu_selector,
+        "--query-gpu=memory.used,memory.total,utilization.gpu",
         "--format=csv,noheader,nounits"
     ], text=True).strip()
     gpu_used, gpu_total, gpu_utilization = [int(x.strip()) for x in gpu.splitlines()[0].split(",")]
     return {
-        "cgroup_limit_bytes": limit,
-        "cgroup_used_bytes": used,
-        "inactive_file_bytes": inactive,
-        "conservative_headroom_gib": (limit - used + inactive) / GIB if limit else None,
-        "oom_kill_count": int(events.get("oom_kill", 0)),
+        "cgroup_limit_bytes": memory["limit_bytes"],
+        "cgroup_used_bytes": memory["used_bytes"],
+        "inactive_file_bytes": memory["inactive_file_bytes"],
+        "conservative_headroom_gib": memory["headroom_gib"],
+        "oom_kill_count": memory["oom_kill_count"],
+        "memory_scope": memory["scope"],
+        "memory_limits_checked": memory["limits_checked"],
+        "gpu_selector": gpu_selector,
         "gpu_used_mib": gpu_used,
         "gpu_total_mib": gpu_total,
         "gpu_utilization_percent": gpu_utilization,
