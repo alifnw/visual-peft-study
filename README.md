@@ -12,6 +12,8 @@ Research question: under a fixed training configuration, how do Linear, LoRA and
 
 Four DTD recipes are available for Linear, LoRA, SSF, and ConvPass, using a new 47-class classifier. The data audit, configuration settings, ordered training commands, and output checks are documented in the [DTD protocol](docs/DTD_PROTOCOL.md). No completed DTD results have been recorded in this checkout.
 
+The training profiler records wall duration, epoch timings, process-tree RSS and VRAM, and selected-device utilization. Raw samples and time-weighted summaries are exported separately from prediction metrics. Resource guards support both the shared A100 container and Linux hosts with nested or unlimited cgroups.
+
 ## Flowers102: Checkpoint 1 progress
 
 - Linear probing, LoRA and SSF completed 100 epochs on the same 800-image training and 200-image validation split.
