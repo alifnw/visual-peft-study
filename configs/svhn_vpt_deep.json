@@ -1,0 +1,38 @@
+{
+  "experiment": "svhn-vpt_deep-seed42-published-recipe",
+  "dataset": "svhn",
+  "expected_class_count": 10,
+  "dataset_audit_manifest": "manifests/svhn_validation.json",
+  "methods": [
+    "vpt_deep"
+  ],
+  "seed": 42,
+  "epochs": 100,
+  "batch_size": 64,
+  "microbatch_size": 8,
+  "validation_batch_size": 8,
+  "num_workers": 0,
+  "learning_rate": 0.001,
+  "weight_decay": 0.001,
+  "warmup_epochs": 10,
+  "warmup_learning_rate": 1e-06,
+  "minimum_learning_rate": 1e-05,
+  "drop_path_rate": 0.1,
+  "normalized": false,
+  "selection": "last_epoch_validation_accuracy",
+  "minimum_conservative_ram_headroom_gib": 3.25,
+  "minimum_free_gpu_mib": 12000,
+  "test_set_access": false,
+  "purpose": "single_seed_development_baseline_using_published_task_recipe",
+  "expected_duplicate_validation_rows": 0,
+  "require_all_classes_in_development": true,
+  "stage": "development",
+  "schema_version": 2,
+  "recipe_source": {
+    "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+    "path": "tune_output/default_vtab/processed_vtab/svhn/vpt_deep/final_result.json",
+    "sha256": "03c21889899d6c0076db4e2d79750bc34186ca60f6aba7ee8364381140f88e4c"
+  },
+  "published_adaptation_parameters": 460800,
+  "vpt_num": 50
+}

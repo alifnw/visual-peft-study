@@ -1,0 +1,41 @@
+{
+  "experiment": "resisc45-adaptformer-seed42-published-recipe",
+  "dataset": "resisc45",
+  "expected_class_count": 45,
+  "dataset_audit_manifest": "manifests/resisc45_validation.json",
+  "methods": [
+    "adaptformer"
+  ],
+  "seed": 42,
+  "epochs": 100,
+  "batch_size": 64,
+  "microbatch_size": 8,
+  "validation_batch_size": 8,
+  "num_workers": 0,
+  "learning_rate": 0.01,
+  "weight_decay": 0.0001,
+  "warmup_epochs": 10,
+  "warmup_learning_rate": 1e-06,
+  "minimum_learning_rate": 1e-05,
+  "drop_path_rate": 0.1,
+  "normalized": false,
+  "selection": "last_epoch_validation_accuracy",
+  "minimum_conservative_ram_headroom_gib": 3.25,
+  "minimum_free_gpu_mib": 12000,
+  "test_set_access": false,
+  "purpose": "single_seed_development_baseline_using_published_task_recipe",
+  "expected_duplicate_validation_rows": 0,
+  "require_all_classes_in_development": true,
+  "stage": "development",
+  "schema_version": 2,
+  "recipe_source": {
+    "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+    "path": "tune_output/default_vtab/processed_vtab/resisc45/adaptformer/final_result.json",
+    "sha256": "4c5748f243fa365f13c8331c80327815d59c2eed216b5956d3c799cc487c4121"
+  },
+  "published_adaptation_parameters": 304320,
+  "adaptformer": {
+    "bottleneck": 16,
+    "scale": 0.2
+  }
+}

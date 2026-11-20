@@ -1,0 +1,353 @@
+{
+  "schema_version": 2,
+  "upstream_commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+  "default_yaml_sha256": "bbe4f8cb9f7e6d3ad5d0233fddd68c779ae4f6e124d03982820e4377cffe2174",
+  "selection": "Published recipes, not locally repeated hyperparameter search",
+  "records": [
+    {
+      "dataset": "dtd",
+      "method": "bitfit",
+      "config": "configs/dtd_bitfit.json",
+      "config_sha256": "09aa89c5deb56fddeda9c5031338e5e47a65f3a274192ca9f3a87da97c5229b1",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/dtd/bitfit/final_result.json",
+        "sha256": "855530f695d1bf49c45b2b0b1fca2441d576d3e39b26a1c66047ac3d019d8f55"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 102912
+    },
+    {
+      "dataset": "resisc45",
+      "method": "bitfit",
+      "config": "configs/resisc45_bitfit.json",
+      "config_sha256": "043258af0271d2be494d6c28bb19013e060a4b4fda9dfe3733b03fd63959fb3b",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/resisc45/bitfit/final_result.json",
+        "sha256": "dd9acacb5579f0077274ec32b8c9a440c716e4671859c4d85ff350a4bab820c4"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 102912
+    },
+    {
+      "dataset": "svhn",
+      "method": "bitfit",
+      "config": "configs/svhn_bitfit.json",
+      "config_sha256": "265989987675a9efeac9a153de6a93b29ae10fdcf7d227778163f4b1a482b58b",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/svhn/bitfit/final_result.json",
+        "sha256": "6847fcde8cd3c31e778f930e994002900b5b5369b90a2e99ca719db5d63d941d"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 102912
+    },
+    {
+      "dataset": "patch_camelyon",
+      "method": "bitfit",
+      "config": "configs/patch_camelyon_bitfit.json",
+      "config_sha256": "53a489d35b722ee20ab87d4db2ed248470b0d231942e435fd4b3aabed902a751",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/patch_camelyon/bitfit/final_result.json",
+        "sha256": "2501ec7530b9bbd9facf357e08c2da52159d8c3d8577b06b97e4b80e0041308b"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 102912
+    },
+    {
+      "dataset": "oxford_flowers102",
+      "method": "bitfit",
+      "config": "configs/oxford_flowers102_bitfit.json",
+      "config_sha256": "52824ff44f55af31e353d61f2f9568ea37a7f8bdd34a0430fd53a4af9bdaa925",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/oxford_flowers102/bitfit/final_result.json",
+        "sha256": "0f285f9f18a9a965c3e2c9958dd298cbf51d90c2f2013c66b8faaf9b339784ea"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "wd": 0.001
+      },
+      "published_adaptation_parameters": 102912
+    },
+    {
+      "dataset": "dtd",
+      "method": "adaptformer",
+      "config": "configs/dtd_adaptformer.json",
+      "config_sha256": "d9ddbd865bd17b3b19f4b58a30026594ba334f6c4d92e5e06492f92394efefac",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/dtd/adaptformer/final_result.json",
+        "sha256": "26873e5fd103f0c9d2a9361cd9b6d713607efbc3ef88498e59f50eb4402b1eab"
+      },
+      "best_tune": {
+        "adapter_bottleneck": 32,
+        "adapter_scaler": 0.1,
+        "lr": 0.01,
+        "wd": 0.001
+      },
+      "published_adaptation_parameters": 599424
+    },
+    {
+      "dataset": "resisc45",
+      "method": "adaptformer",
+      "config": "configs/resisc45_adaptformer.json",
+      "config_sha256": "d350766b18de8259f3e09d4704166517f913c9b5b790127ac2d7fba5c1d66dbb",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/resisc45/adaptformer/final_result.json",
+        "sha256": "4c5748f243fa365f13c8331c80327815d59c2eed216b5956d3c799cc487c4121"
+      },
+      "best_tune": {
+        "adapter_bottleneck": 16,
+        "adapter_scaler": 0.2,
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 304320
+    },
+    {
+      "dataset": "svhn",
+      "method": "adaptformer",
+      "config": "configs/svhn_adaptformer.json",
+      "config_sha256": "22236fe13cf831be6a5f5e045efb14a7cc47f03c75503acb71e1ba210031c648",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/svhn/adaptformer/final_result.json",
+        "sha256": "5fd47293f18ee2bc8c6d4cbd6a24f34aaaf4ce7db8bde0dfd1f2d0c8a9359ffc"
+      },
+      "best_tune": {
+        "adapter_bottleneck": 32,
+        "adapter_scaler": 0.2,
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 599424
+    },
+    {
+      "dataset": "patch_camelyon",
+      "method": "adaptformer",
+      "config": "configs/patch_camelyon_adaptformer.json",
+      "config_sha256": "130c2c023df4a3b27b0a43daebd1566cb48762f6a0bcd7e1eb0a6c499f5c55ac",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/patch_camelyon/adaptformer/final_result.json",
+        "sha256": "bc7cf2b2f96f3ba648bf5488cda39799aee9b439f4a959531da117d58679a148"
+      },
+      "best_tune": {
+        "adapter_bottleneck": 16,
+        "adapter_scaler": 0.1,
+        "lr": 0.001,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 304320
+    },
+    {
+      "dataset": "oxford_flowers102",
+      "method": "adaptformer",
+      "config": "configs/oxford_flowers102_adaptformer.json",
+      "config_sha256": "8e89aaa53225b890bb257878d24a7ec497e8d6c85bf23294dea5e3be3cb9ed42",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/oxford_flowers102/adaptformer/final_result.json",
+        "sha256": "9dfd0f4654bc71b35547af3af54e89610dd979bfec9c468bfb31a14da7e8d452"
+      },
+      "best_tune": {
+        "adapter_bottleneck": 16,
+        "adapter_scaler": 0.2,
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 304320
+    },
+    {
+      "dataset": "dtd",
+      "method": "vpt_deep",
+      "config": "configs/dtd_vpt_deep.json",
+      "config_sha256": "79ec81ea324ad713a39594f7ff4b226bebe1e89fa327c996aa5854603c423ed0",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/dtd/vpt_deep/final_result.json",
+        "sha256": "b56b666dcf684fc77644055a371701bc0dcd7d905dc9b31d2898764488af5f3a"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "vpt_num": 100,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 921600
+    },
+    {
+      "dataset": "resisc45",
+      "method": "vpt_deep",
+      "config": "configs/resisc45_vpt_deep.json",
+      "config_sha256": "1450cec4542f53be20fd62b0816b70aff6d82efb93fcab45b584accaeb1204e3",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/resisc45/vpt_deep/final_result.json",
+        "sha256": "db738d42f8c42621a3afd3f736806e45319db80c403de32e64d7af30b0612c95"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "vpt_num": 5,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 46080
+    },
+    {
+      "dataset": "svhn",
+      "method": "vpt_deep",
+      "config": "configs/svhn_vpt_deep.json",
+      "config_sha256": "162c514f82b2c8be038ef3fe7dbe623e1203edd37c5e329a6586fc8048b7d5e0",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/svhn/vpt_deep/final_result.json",
+        "sha256": "03c21889899d6c0076db4e2d79750bc34186ca60f6aba7ee8364381140f88e4c"
+      },
+      "best_tune": {
+        "lr": 0.001,
+        "vpt_num": 50,
+        "wd": 0.001
+      },
+      "published_adaptation_parameters": 460800
+    },
+    {
+      "dataset": "patch_camelyon",
+      "method": "vpt_deep",
+      "config": "configs/patch_camelyon_vpt_deep.json",
+      "config_sha256": "f8b6e021949a8a5ddec4fa42eaa7609ca070061ef342203a1c7bb3c056d5ec56",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/patch_camelyon/vpt_deep/final_result.json",
+        "sha256": "17df77ed25d10515742bd12b7d9486786b142d6494e3376e82a963290df7f240"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "vpt_num": 5,
+        "wd": 0.001
+      },
+      "published_adaptation_parameters": 46080
+    },
+    {
+      "dataset": "oxford_flowers102",
+      "method": "vpt_deep",
+      "config": "configs/oxford_flowers102_vpt_deep.json",
+      "config_sha256": "cc095564bf3d661b2e428146b8917f6d9e7da5acd31b0d2189077a277d7b8434",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/oxford_flowers102/vpt_deep/final_result.json",
+        "sha256": "4d0a13c47f2c4ff7d8ae0a5b43c2398bc4314e2667b80b78d9fe48b89a3a6bc9"
+      },
+      "best_tune": {
+        "lr": 0.01,
+        "vpt_num": 10,
+        "wd": 0.001
+      },
+      "published_adaptation_parameters": 92160
+    },
+    {
+      "dataset": "dtd",
+      "method": "fact_tt",
+      "config": "configs/dtd_fact_tt.json",
+      "config_sha256": "99b3b79c904d74c1f21d8f6fcba9ff107f65d0ce37f485166f001a5f405a89f8",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/dtd/fact_tt/final_result.json",
+        "sha256": "d0bf61f785bee40e6f69a475d0b7866b85d51cfc753e3b5babb19886bbfa8c2d"
+      },
+      "best_tune": {
+        "fact_dim": 32,
+        "fact_scaler": 0.01,
+        "lr": 0.01,
+        "wd": 0.001
+      },
+      "published_adaptation_parameters": 196608
+    },
+    {
+      "dataset": "resisc45",
+      "method": "fact_tt",
+      "config": "configs/resisc45_fact_tt.json",
+      "config_sha256": "b516701d846298fc40da3518d848ccd2563c8baced35a7e0b6d71ae2609df17c",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/resisc45/fact_tt/final_result.json",
+        "sha256": "8140eec2b5dfca229504c08453139556fca167557d60fa263374063a99564917"
+      },
+      "best_tune": {
+        "fact_dim": 16,
+        "fact_scaler": 10,
+        "lr": 0.001,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 61440
+    },
+    {
+      "dataset": "svhn",
+      "method": "fact_tt",
+      "config": "configs/svhn_fact_tt.json",
+      "config_sha256": "5e36ba5cd32f90f917dd6dcf1551d5cb0ef048df910f7e2e983a6f8c10882469",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/svhn/fact_tt/final_result.json",
+        "sha256": "5f707ab0adad70c49c68e57539c2b4113212025bf58788add2bc99b490548650"
+      },
+      "best_tune": {
+        "fact_dim": 32,
+        "fact_scaler": 100,
+        "lr": 0.001,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 196608
+    },
+    {
+      "dataset": "patch_camelyon",
+      "method": "fact_tt",
+      "config": "configs/patch_camelyon_fact_tt.json",
+      "config_sha256": "1130c14f18af1c5f8dcb5e6d168e0ff64da9cc466a3831d9b3d8631cd53d3574",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/patch_camelyon/fact_tt/final_result.json",
+        "sha256": "890be61772563dcc7602b6807bbc9ef6fdf290983f5fcc839be66ed5e36f5dd1"
+      },
+      "best_tune": {
+        "fact_dim": 16,
+        "fact_scaler": 0.1,
+        "lr": 0.01,
+        "wd": 0.0001
+      },
+      "published_adaptation_parameters": 61440
+    },
+    {
+      "dataset": "oxford_flowers102",
+      "method": "fact_tt",
+      "config": "configs/oxford_flowers102_fact_tt.json",
+      "config_sha256": "e161ece55f60d1a3773a115dc00939cfdf40df604ed1e8e361da9959e6b4f437",
+      "source": {
+        "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+        "path": "tune_output/default_vtab/processed_vtab/oxford_flowers102/fact_tt/final_result.json",
+        "sha256": "aeb869dd162f58d06401dd3823877498aff3db801c014dd37a390fe8f4756d07"
+      },
+      "best_tune": {
+        "fact_dim": 32,
+        "fact_scaler": 1,
+        "lr": 0.001,
+        "wd": 0.001
+      },
+      "published_adaptation_parameters": 196608
+    }
+  ]
+}

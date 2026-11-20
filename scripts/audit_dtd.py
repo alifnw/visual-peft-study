@@ -32,7 +32,8 @@ def validate_audit_manifest(config, root):
         raise ValueError("Dataset audit has not established disjoint splits")
     for name, count in (("train800.txt", 800), ("val200.txt", 200)):
         record = audit["splits"][name]
-        if record["rows"] != count or record["classes_observed"] != classes:
+        if record["rows"] != count or (config.get("require_all_classes_in_development", True)
+                                       and record["classes_observed"] != classes):
             raise ValueError("Dataset audit has unexpected rows or missing classes")
         source = Path(root) / "data/vtab_processed" / config["dataset"] / name
         if file_hash(source) != record["list_sha256"]:

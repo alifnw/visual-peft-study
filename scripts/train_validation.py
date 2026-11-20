@@ -22,7 +22,7 @@ import traceback
 from smoke_test import hash_frozen, resource_state, save
 from gradient_accumulation import accumulated_step
 from resource_guard import snapshot as runtime_snapshot, stop_reason
-from peft_methods import METHODS, method_settings, is_method_parameter, expected_method_parameters
+from peft_methods import METHODS, method_settings, is_method_parameter, expected_method_parameters, hash_pretrained_backbone
 from initialization_reference import load_reference_result, validate_initialization_reference
 from audit_dtd import validate_audit_manifest
 
@@ -127,12 +127,14 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
     trim_host_memory("pretrained_weights_loaded")
     torch.manual_seed(seed)
     model.reset_classifier(params.class_num)
+    pretrained_initial = hash_pretrained_backbone(model)
     classifier_initial_hash = hashlib.sha256(b"".join(
         value.detach().cpu().numpy().tobytes() for value in model.head.parameters())).hexdigest()
     for name, value in model.named_parameters():
         value.requires_grad_(name.startswith("head.") or is_method_parameter(name, method))
     frozen_initial = hash_frozen(model)
-    reference_matched = validate_initialization_reference(reference_result, classifier_initial_hash, frozen_initial)
+    reference_matched = validate_initialization_reference(reference_result, classifier_initial_hash,
+                                                        frozen_initial, pretrained_initial)
     model = model.cuda()
     trim_host_memory("model_on_gpu")
     trainable = [p for p in model.parameters() if p.requires_grad]
@@ -192,7 +194,8 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
             "numpy_rng": np.random.get_state(), "python_rng": random.getstate(),
             "best_validation": best, "history": history, "config": config, "method": method,
             "classifier_initial_sha256": classifier_initial_hash,
-            "frozen_backbone_sha256": frozen_initial}
+            "frozen_backbone_sha256": frozen_initial,
+            "pretrained_backbone_initial_sha256": pretrained_initial}
         temporary = path.with_suffix(".pt.tmp")
         torch.save(payload, temporary)
         temporary.replace(path)
@@ -201,6 +204,16 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
     history = []
     best = {"top1": -1, "epoch": None}
     if resume:
+        previous_provenance = json.loads((output / "provenance.json").read_text())
+        if previous_provenance["script_sha256"] != digest(Path(__file__)):
+            raise ValueError("Resume source mismatch. Restore the recorded runner before resuming")
+        for field, path in (("method_helpers_sha256", ROOT / "scripts/peft_methods.py"),
+                            ("gradient_accumulation_source_sha256", ROOT / "scripts/gradient_accumulation.py")):
+            if previous_provenance[field] != digest(path):
+                raise ValueError("Resume helper source mismatch")
+        for name, expected in previous_provenance["split_sha256"].items():
+            if digest(ROOT / "data/vtab_processed" / config["dataset"] / name) != expected:
+                raise ValueError("Resume split hash mismatch")
         checkpoint = torch.load(output / "last.pt", map_location="cpu")
         assert checkpoint["config"] == config and checkpoint["method"] == method
         assert checkpoint["classifier_initial_sha256"] == classifier_initial_hash
@@ -217,6 +230,7 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
 
     versions = {name: importlib.metadata.version(name) for name in ("torch", "torchvision", "timm", "numpy", "Pillow")}
     provenance = {
+        "schema_version": 2, "stage": "development",
         "dataset": config["dataset"], "class_count": params.class_num,
         "dataset_audit": dataset_audit,
         "source_commit": subprocess.check_output(["git", "-C", str(ROOT / "code"), "rev-parse", "HEAD"], text=True).strip(),
@@ -228,6 +242,7 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
         "gradient_accumulation_source_sha256": digest(ROOT / "scripts/gradient_accumulation.py"),
         "resource_guard_source_sha256": digest(ROOT / "scripts/resource_guard.py"),
         "method_helpers_sha256": digest(ROOT / "scripts/peft_methods.py"),
+        "initialization_helpers_sha256": digest(ROOT / "scripts/initialization_reference.py"),
         "method_settings": method_settings(config, method),
         "trainable_parameter_names": trainable_names,
         "smoke_check": smoke_check,
@@ -243,11 +258,13 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
             ROOT / "code/model/ssf.py", ROOT / "code/model/convpass.py",
             ROOT / "code/model/block.py", ROOT / "code/model/attention.py",
             ROOT / "code/model/mlp.py", ROOT / "code/model/patch_embed.py",
+            ROOT / "code/model/vpt.py", ROOT / "code/model/adapter.py", ROOT / "code/model/fact.py",
             ROOT / "code/data/dataset/vtab_processed.py"]},
         "split_sha256": {name: digest(ROOT / "data/vtab_processed" / config["dataset"] / name)
                           for name in ("train800.txt", "val200.txt")},
         "weights_manifest": json.loads((ROOT / "manifests/pretrained_weights.json").read_text()),
         "frozen_backbone_sha256": frozen_initial,
+        "pretrained_backbone_initial_sha256": pretrained_initial,
         "classifier_initial_sha256": classifier_initial_hash,
         "initialization_reference": ({**reference_result, "matched": reference_matched}
                                      if reference_result is not None else None),
@@ -329,7 +346,12 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
         logits = np.concatenate(predictions)
         targets = np.concatenate(target_values)
         assert logits.shape == (len(val_data), params.class_num) and np.isfinite(logits).all()
-        np.savez_compressed(output / f"validation_{label}.npz", logits=logits, targets=targets)
+        rows = (ROOT / "data/vtab_processed" / config["dataset"] / "val200.txt").read_text().splitlines()
+        paths = np.asarray([row.rsplit(maxsplit=1)[0] for row in rows][:len(val_data)])
+        split_targets = np.asarray([int(row.rsplit(maxsplit=1)[1]) for row in rows][:len(val_data)])
+        assert np.array_equal(split_targets, targets), "Validation label order differs from split metadata"
+        np.savez_compressed(output / f"validation_{label}.npz", logits=logits, targets=targets,
+                            validation_indices=np.arange(len(targets)), image_paths=paths)
         if dataset_audit is not None and not smoke_check:
             indices = np.array(dataset_audit["validation_indices_without_training_content"], dtype=np.int64)
             np.savez_compressed(output / f"validation_{label}_without_training_duplicates.npz",
@@ -362,6 +384,7 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
     assert abs(best_accuracy - best["top1"]) < 0.006
     final_resources = resource_state()
     result = {
+        "schema_version": 2, "stage": "development",
         "phase": "complete", "method": method, "dataset": config["dataset"],
         "class_count": params.class_num,
         "purpose": config["purpose"], "seed": seed, "epochs": len(history),
@@ -384,6 +407,8 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
         "final_train_metrics": {k: history[-1]["train_" + k] for k in ("loss", "top1", "top5")},
         "final_validation_metrics": {k: history[-1]["val_" + k] for k in ("loss", "top1", "top5")},
         "total_epoch_seconds": sum(row["epoch_seconds"] for row in history),
+        "observed_total_epoch_minutes": sum(row["epoch_seconds"] for row in history) / 60,
+        "observed_mean_epoch_seconds": sum(row["epoch_seconds"] for row in history) / len(history),
         "peak_process_rss_mib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024,
         "peak_gpu_allocated_mib": torch.cuda.max_memory_allocated() / 1024 ** 2,
         "peak_gpu_reserved_mib": torch.cuda.max_memory_reserved() / 1024 ** 2,
@@ -392,6 +417,7 @@ def run(config, method, output, initial, resume, resource_policy, reference_resu
         "method_parameters_updated": method != "linear",
         "classifier_initial_sha256": classifier_initial_hash,
         "frozen_backbone_sha256": frozen_initial,
+        "pretrained_backbone_initial_sha256": pretrained_initial,
         "new_oom_kills": final_resources["oom_kill_count"] - initial["oom_kill_count"],
         "final_resources": final_resources,
         "config": config,
@@ -417,7 +443,13 @@ def main():
                         help="Explicit override of the initial RAM gate only. Runtime guards remain enabled.")
     parser.add_argument("--trim-host-allocator", action="store_true",
                         help="Return freed host allocator pages at model-loading stage boundaries.")
+    parser.add_argument("--minimum-free-gpu-mib", type=int,
+                        help="Operational VRAM admission threshold, recorded separately from the training config.")
+    parser.add_argument("--parallel-device-lock", action="store_true",
+                        help="Permit other project workers on different physical GPUs.")
     args = parser.parse_args()
+    if args.minimum_free_gpu_mib is not None and args.minimum_free_gpu_mib < 1:
+        parser.error("The VRAM admission threshold must be positive")
     config_path = ROOT / args.config
     config = json.loads(config_path.read_text())
     if args.smoke_check:
@@ -432,7 +464,21 @@ def main():
     reference_result = load_reference_result(reference_path)
     (ROOT / "runs").mkdir(exist_ok=True)
     lock = (ROOT / "runs/.training.lock").open("a")
-    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    lock_mode = fcntl.LOCK_SH if args.parallel_device_lock else fcntl.LOCK_EX
+    fcntl.flock(lock, lock_mode | fcntl.LOCK_NB)
+    device_lock = None
+    if args.parallel_device_lock:
+        selector = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+        if not selector or "," in selector:
+            parser.error("A parallel worker must expose exactly one GPU")
+        uuid = subprocess.check_output(
+            ["nvidia-smi", "--id=" + selector, "--query-gpu=uuid", "--format=csv,noheader"],
+            text=True, timeout=10,
+        ).strip()
+        if not uuid.startswith("GPU-") or not all(c in "0123456789abcdefABCDEF-" for c in uuid[4:]):
+            raise ValueError("Could not identify a single physical GPU")
+        device_lock = (ROOT / "runs" / f".training-{uuid}.lock").open("a")
+        fcntl.flock(device_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     output = ROOT / args.output
     output = output.resolve()
     if not output.is_relative_to(ROOT / "runs"):
@@ -458,6 +504,8 @@ def main():
         "runtime_cache_credit_cap_mib": 512,
         "runtime_resident_headroom_minimum_gib": 0.75,
         "runtime_full_pressure_maximum_avg10_percent": 10.0,
+        "configured_minimum_free_gpu_mib": config["minimum_free_gpu_mib"],
+        "operational_minimum_free_gpu_mib": args.minimum_free_gpu_mib or config["minimum_free_gpu_mib"],
     }
     status = {"phase": "preflight", "method": args.method, "initial_resources": initial,
               "resource_policy": resource_policy}
@@ -467,7 +515,7 @@ def main():
         save(output / "status.json", status)
         print(json.dumps(status, indent=2), flush=True)
         return 3
-    if initial["gpu_total_mib"] - initial["gpu_used_mib"] < config["minimum_free_gpu_mib"] or initial["gpu_utilization_percent"] > 20:
+    if initial["gpu_total_mib"] - initial["gpu_used_mib"] < resource_policy["operational_minimum_free_gpu_mib"] or initial["gpu_utilization_percent"] > 20:
         status.update(phase="blocked_resources", reason="GPU busy or insufficient free VRAM")
         save(output / "status.json", status)
         print(json.dumps(status, indent=2), flush=True)
