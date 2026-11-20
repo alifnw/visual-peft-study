@@ -1,0 +1,132 @@
+{
+  "schema_version": 2,
+  "stage": "development",
+  "phase": "complete",
+  "method": "adaptformer",
+  "dataset": "dtd",
+  "class_count": 47,
+  "purpose": "single_seed_development_baseline_using_published_task_recipe",
+  "seed": 42,
+  "epochs": 100,
+  "smoke_check": false,
+  "rows": {
+    "train": 800,
+    "validation": 200,
+    "test_used": 0
+  },
+  "training_images_used_per_epoch": 768,
+  "drop_last": true,
+  "total_parameters": 86434223,
+  "effective_batch_size": 64,
+  "microbatch_size": 8,
+  "optimizer_updates_per_epoch": 12,
+  "trainable_parameters_including_head": 635567,
+  "trainable_parameters_excluding_head": 599424,
+  "trainable_percent": 0.7353186943093131,
+  "primary_metric": "last_epoch_validation_top1_percent",
+  "last_epoch_validation_top1_percent": 61.5,
+  "validation_training_duplicate_rows": 1,
+  "validation_rows_without_training_content": 199,
+  "last_epoch_validation_without_training_duplicates_top1_percent": 61.30653266331658,
+  "best_validation_top1_percent": 66.0,
+  "best_validation_epoch": 37,
+  "final_train_metrics": {
+    "loss": 0.01,
+    "top1": 99.87,
+    "top5": 100.0
+  },
+  "final_validation_metrics": {
+    "loss": 2.29,
+    "top1": 61.5,
+    "top5": 87.5
+  },
+  "total_epoch_seconds": 1798.9644409470056,
+  "observed_total_epoch_minutes": 29.982740682450093,
+  "observed_mean_epoch_seconds": 17.989644409470056,
+  "peak_process_rss_mib": 3344.6875,
+  "peak_gpu_allocated_mib": 1006.2783203125,
+  "peak_gpu_reserved_mib": 1136.0,
+  "frozen_backbone_unchanged": true,
+  "checkpoint_reload_exact": true,
+  "classifier_parameters_updated": true,
+  "method_parameters_updated": true,
+  "classifier_initial_sha256": "d2ddfaa3a421cdb8c0ed94eb5387652186b4bed5e545366f71a79e9cf973a95f",
+  "frozen_backbone_sha256": "e290876c1e65a2e87f99309adedae3d1bf015ba66e2e9a686c6befb1ddec5945",
+  "pretrained_backbone_initial_sha256": "e290876c1e65a2e87f99309adedae3d1bf015ba66e2e9a686c6befb1ddec5945",
+  "new_oom_kills": 0,
+  "final_resources": {
+    "cgroup_limit_bytes": 67301437440,
+    "cgroup_used_bytes": 12469714944,
+    "inactive_file_bytes": 0,
+    "conservative_headroom_gib": 51.06602096557617,
+    "oom_kill_count": 0,
+    "memory_scope": "host_memavailable",
+    "memory_limits_checked": [
+      {
+        "scope": "host_memavailable",
+        "limit_bytes": 67301437440,
+        "used_bytes": 12469714944,
+        "headroom_gib": 51.06602096557617
+      }
+    ],
+    "gpu_selector": "1",
+    "gpu_used_mib": 959,
+    "gpu_total_mib": 12288,
+    "gpu_utilization_percent": 71
+  },
+  "config": {
+    "experiment": "dtd-adaptformer-seed42-published-recipe",
+    "dataset": "dtd",
+    "expected_class_count": 47,
+    "dataset_audit_manifest": "manifests/dtd_validation.json",
+    "methods": [
+      "adaptformer"
+    ],
+    "seed": 42,
+    "epochs": 100,
+    "batch_size": 64,
+    "microbatch_size": 8,
+    "validation_batch_size": 8,
+    "num_workers": 0,
+    "learning_rate": 0.01,
+    "weight_decay": 0.001,
+    "warmup_epochs": 10,
+    "warmup_learning_rate": 1e-06,
+    "minimum_learning_rate": 1e-05,
+    "drop_path_rate": 0.1,
+    "normalized": false,
+    "selection": "last_epoch_validation_accuracy",
+    "minimum_conservative_ram_headroom_gib": 3.25,
+    "minimum_free_gpu_mib": 12000,
+    "test_set_access": false,
+    "purpose": "single_seed_development_baseline_using_published_task_recipe",
+    "expected_duplicate_validation_rows": 1,
+    "require_all_classes_in_development": true,
+    "stage": "development",
+    "schema_version": 2,
+    "recipe_source": {
+      "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+      "path": "tune_output/default_vtab/processed_vtab/dtd/adaptformer/final_result.json",
+      "sha256": "26873e5fd103f0c9d2a9361cd9b6d713607efbc3ef88498e59f50eb4402b1eab"
+    },
+    "published_adaptation_parameters": 599424,
+    "adaptformer": {
+      "bottleneck": 32,
+      "scale": 0.1
+    }
+  },
+  "resource_policy": {
+    "startup_ram_check_skipped": false,
+    "configured_startup_ram_headroom_gib": 3.25,
+    "runtime_minimum_headroom_gib": 0.35,
+    "runtime_oom_guard_enabled": true,
+    "server_memory_limit_unchanged": true,
+    "trim_host_allocator": true,
+    "runtime_cache_credit_fraction": 0.25,
+    "runtime_cache_credit_cap_mib": 512,
+    "runtime_resident_headroom_minimum_gib": 0.75,
+    "runtime_full_pressure_maximum_avg10_percent": 10.0,
+    "configured_minimum_free_gpu_mib": 12000,
+    "operational_minimum_free_gpu_mib": 6144
+  }
+}

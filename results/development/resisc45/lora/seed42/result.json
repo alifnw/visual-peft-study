@@ -1,0 +1,114 @@
+{
+  "phase": "complete",
+  "method": "lora",
+  "dataset": "resisc45",
+  "class_count": 45,
+  "purpose": "resisc45_single_seed_development_baseline_using_published_task_recipe",
+  "seed": 42,
+  "epochs": 100,
+  "smoke_check": false,
+  "rows": {
+    "train": 800,
+    "validation": 200,
+    "test_used": 0
+  },
+  "training_images_used_per_epoch": 768,
+  "drop_last": true,
+  "total_parameters": 87012909,
+  "effective_batch_size": 64,
+  "microbatch_size": 8,
+  "optimizer_updates_per_epoch": 12,
+  "trainable_parameters_including_head": 1214253,
+  "trainable_parameters_excluding_head": 1179648,
+  "trainable_percent": 1.3954860421917397,
+  "primary_metric": "last_epoch_validation_top1_percent",
+  "last_epoch_validation_top1_percent": 83.5,
+  "best_validation_top1_percent": 86.0,
+  "best_validation_epoch": 71,
+  "final_train_metrics": {
+    "loss": 0.02,
+    "top1": 99.87,
+    "top5": 100.0
+  },
+  "final_validation_metrics": {
+    "loss": 0.67,
+    "top1": 83.5,
+    "top5": 98.5
+  },
+  "total_epoch_seconds": 1847.931520777056,
+  "peak_process_rss_mib": 3333.09375,
+  "peak_gpu_allocated_mib": 1132.91015625,
+  "peak_gpu_reserved_mib": 1250.0,
+  "frozen_backbone_unchanged": true,
+  "checkpoint_reload_exact": true,
+  "classifier_parameters_updated": true,
+  "method_parameters_updated": true,
+  "classifier_initial_sha256": "37665b95cf25964c5e52300c745e40536fac956a8cf3babc9e7f6564388fffe6",
+  "frozen_backbone_sha256": "e290876c1e65a2e87f99309adedae3d1bf015ba66e2e9a686c6befb1ddec5945",
+  "new_oom_kills": 0,
+  "final_resources": {
+    "cgroup_limit_bytes": 67301441536,
+    "cgroup_used_bytes": 9299173376,
+    "inactive_file_bytes": 0,
+    "conservative_headroom_gib": 54.018821716308594,
+    "oom_kill_count": 0,
+    "memory_scope": "host_memavailable",
+    "memory_limits_checked": [
+      {
+        "scope": "host_memavailable",
+        "limit_bytes": 67301441536,
+        "used_bytes": 9299173376,
+        "headroom_gib": 54.018821716308594
+      }
+    ],
+    "gpu_selector": "0",
+    "gpu_used_mib": 963,
+    "gpu_total_mib": 12288,
+    "gpu_utilization_percent": 84
+  },
+  "config": {
+    "experiment": "resisc45-lora-seed42",
+    "dataset": "resisc45",
+    "expected_class_count": 45,
+    "methods": [
+      "lora"
+    ],
+    "seed": 42,
+    "epochs": 100,
+    "batch_size": 64,
+    "microbatch_size": 8,
+    "validation_batch_size": 8,
+    "num_workers": 0,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "lora_rank": 32,
+    "warmup_epochs": 10,
+    "warmup_learning_rate": 1e-06,
+    "minimum_learning_rate": 1e-05,
+    "drop_path_rate": 0.1,
+    "normalized": false,
+    "selection": "last_epoch_validation_accuracy",
+    "minimum_conservative_ram_headroom_gib": 3.25,
+    "minimum_free_gpu_mib": 12000,
+    "test_set_access": false,
+    "purpose": "resisc45_single_seed_development_baseline_using_published_task_recipe",
+    "hyperparameter_source": {
+      "repository": "https://github.com/OSU-MLB/ViT_PEFT_Vision",
+      "commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+      "path": "tune_output/default_vtab/processed_vtab/resisc45/lora/final_result.json",
+      "selected_field": "best_tune"
+    }
+  },
+  "resource_policy": {
+    "startup_ram_check_skipped": false,
+    "configured_startup_ram_headroom_gib": 3.25,
+    "runtime_minimum_headroom_gib": 0.35,
+    "runtime_oom_guard_enabled": true,
+    "server_memory_limit_unchanged": true,
+    "trim_host_allocator": true,
+    "runtime_cache_credit_fraction": 0.25,
+    "runtime_cache_credit_cap_mib": 512,
+    "runtime_resident_headroom_minimum_gib": 0.75,
+    "runtime_full_pressure_maximum_avg10_percent": 10.0
+  }
+}

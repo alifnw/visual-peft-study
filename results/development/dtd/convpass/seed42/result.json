@@ -1,0 +1,117 @@
+{
+  "phase": "complete",
+  "method": "convpass",
+  "dataset": "dtd",
+  "class_count": 47,
+  "purpose": "dtd_single_seed_development_baseline_using_published_task_recipe",
+  "seed": 42,
+  "epochs": 100,
+  "smoke_check": false,
+  "rows": {
+    "train": 800,
+    "validation": 200,
+    "test_used": 0
+  },
+  "training_images_used_per_epoch": 768,
+  "drop_last": true,
+  "total_parameters": 86162351,
+  "effective_batch_size": 64,
+  "microbatch_size": 8,
+  "optimizer_updates_per_epoch": 12,
+  "trainable_parameters_including_head": 363695,
+  "trainable_parameters_excluding_head": 327552,
+  "trainable_percent": 0.42210431328643755,
+  "primary_metric": "last_epoch_validation_top1_percent",
+  "last_epoch_validation_top1_percent": 64.5,
+  "validation_training_duplicate_rows": 1,
+  "validation_rows_without_training_content": 199,
+  "last_epoch_validation_without_training_duplicates_top1_percent": 64.321608040201,
+  "best_validation_top1_percent": 67.5,
+  "best_validation_epoch": 40,
+  "final_train_metrics": {
+    "loss": 0.01,
+    "top1": 100.0,
+    "top5": 100.0
+  },
+  "final_validation_metrics": {
+    "loss": 1.86,
+    "top1": 64.5,
+    "top5": 89.5
+  },
+  "total_epoch_seconds": 1991.2420981548494,
+  "peak_process_rss_mib": 3479.9140625,
+  "peak_gpu_allocated_mib": 1133.85888671875,
+  "peak_gpu_reserved_mib": 1268.0,
+  "frozen_backbone_unchanged": true,
+  "checkpoint_reload_exact": true,
+  "classifier_parameters_updated": true,
+  "method_parameters_updated": true,
+  "classifier_initial_sha256": "d2ddfaa3a421cdb8c0ed94eb5387652186b4bed5e545366f71a79e9cf973a95f",
+  "frozen_backbone_sha256": "e290876c1e65a2e87f99309adedae3d1bf015ba66e2e9a686c6befb1ddec5945",
+  "new_oom_kills": 0,
+  "final_resources": {
+    "cgroup_limit_bytes": 67301441536,
+    "cgroup_used_bytes": 10864082944,
+    "inactive_file_bytes": 0,
+    "conservative_headroom_gib": 52.56138610839844,
+    "oom_kill_count": 0,
+    "memory_scope": "host_memavailable",
+    "memory_limits_checked": [
+      {
+        "scope": "host_memavailable",
+        "limit_bytes": 67301441536,
+        "used_bytes": 10864082944,
+        "headroom_gib": 52.56138610839844
+      }
+    ],
+    "gpu_selector": "0",
+    "gpu_used_mib": 971,
+    "gpu_total_mib": 12288,
+    "gpu_utilization_percent": 70
+  },
+  "config": {
+    "experiment": "dtd-convpass-seed42",
+    "dataset": "dtd",
+    "expected_class_count": 47,
+    "dataset_audit_manifest": "manifests/dtd_validation.json",
+    "methods": [
+      "convpass"
+    ],
+    "seed": 42,
+    "epochs": 100,
+    "batch_size": 64,
+    "microbatch_size": 8,
+    "validation_batch_size": 8,
+    "num_workers": 0,
+    "learning_rate": 0.01,
+    "weight_decay": 0.001,
+    "convpass": {
+      "bottleneck": 8,
+      "scale": 1,
+      "xavier_init": false
+    },
+    "warmup_epochs": 10,
+    "warmup_learning_rate": 1e-06,
+    "minimum_learning_rate": 1e-05,
+    "drop_path_rate": 0.1,
+    "normalized": false,
+    "selection": "last_epoch_validation_accuracy",
+    "minimum_conservative_ram_headroom_gib": 3.25,
+    "minimum_free_gpu_mib": 12000,
+    "test_set_access": false,
+    "purpose": "dtd_single_seed_development_baseline_using_published_task_recipe",
+    "expected_duplicate_validation_rows": 1
+  },
+  "resource_policy": {
+    "startup_ram_check_skipped": false,
+    "configured_startup_ram_headroom_gib": 3.25,
+    "runtime_minimum_headroom_gib": 0.35,
+    "runtime_oom_guard_enabled": true,
+    "server_memory_limit_unchanged": true,
+    "trim_host_allocator": true,
+    "runtime_cache_credit_fraction": 0.25,
+    "runtime_cache_credit_cap_mib": 512,
+    "runtime_resident_headroom_minimum_gib": 0.75,
+    "runtime_full_pressure_maximum_avg10_percent": 10.0
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "methods": [
+    "convpass",
+    "ssf",
+    "lora"
+  ],
+  "training_seed": 42,
+  "epochs": 100,
+  "clean_controls": {
+    "convpass": {
+      "trainer_sha256": "16c1c3653b6bf70974165c6ce148a5c66ef6aaf7d92d4dd4b111341b83603990",
+      "reference_sha256": "9808ce5a794f5f15f175237ddbd2b2cf8620ee62f173a01f3a0506fa241fc505"
+    },
+    "ssf": {
+      "trainer_sha256": "16c1c3653b6bf70974165c6ce148a5c66ef6aaf7d92d4dd4b111341b83603990",
+      "reference_sha256": "40332f708db23ea7420ba406b3967979875b7f8ef9f6542f8e3c76f3677a2946"
+    },
+    "lora": {
+      "trainer_sha256": "16c1c3653b6bf70974165c6ce148a5c66ef6aaf7d92d4dd4b111341b83603990",
+      "reference_sha256": "6b47a8bbb07078f526883273c192726cbd276929b05f688f1c52cddeb38029f7"
+    }
+  },
+  "trainer_sha256": "4bc4a3d16b9df0abdb6907b7f30ca344cc1d822691fc2c89329ba113f568f0c2",
+  "upstream_commit": "cea7e21b2ddecef8172f5d177da5a29d531c4279",
+  "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+  "corruption_manifest_sha256": "4951b5810ed00956dceca9c1a846e5daa9656b2b45600d7016988b8b6dcfab87",
+  "configs_sha256": {
+    "convpass": "6c439c98a0aa29b6e4824c53b2af832f5f0be49cef4f3edfebdde507f9abc3f1",
+    "ssf": "48dad8c53093d88a7c93ba3b9e0d6c8c0254a050c306b836d34bb2ee67b9f4e9",
+    "lora": "7f4882cfe1d25caa494ee51aab907318af77ac98467db90b905f98a3fd1df874"
+  }
+}
