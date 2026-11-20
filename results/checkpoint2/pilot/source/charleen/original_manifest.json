@@ -1,0 +1,370 @@
+{
+  "schema_version": 2,
+  "status": "complete",
+  "configuration": {
+    "datasets": [
+      "dtd",
+      "resisc45",
+      "svhn",
+      "patch_camelyon"
+    ],
+    "pairs": [
+      [
+        "linear",
+        "convpass"
+      ],
+      [
+        "convpass",
+        "linear"
+      ],
+      [
+        "lora",
+        "convpass"
+      ],
+      [
+        "convpass",
+        "lora"
+      ],
+      [
+        "ssf",
+        "convpass"
+      ],
+      [
+        "convpass",
+        "ssf"
+      ]
+    ],
+    "fallback_rules": [
+      "replacement",
+      "averaging"
+    ]
+  },
+  "created_from_saved_logits": true,
+  "training_launched": false,
+  "model_checkpoints_loaded": false,
+  "test_predictions_used": false,
+  "training_seed": 42,
+  "calibration_split_seeds": [
+    42,
+    43,
+    44
+  ],
+  "random_routing_seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61
+  ],
+  "random_protocol": "exact_count_per_fold",
+  "folds": 5,
+  "temperature_bounds": [
+    0.05,
+    20.0
+  ],
+  "fallback_rates": [
+    0.25,
+    0.5,
+    0.75
+  ],
+  "evaluation_scope": "exploratory development validation",
+  "datasets": [
+    {
+      "dataset": "dtd",
+      "n": 199,
+      "class_count": 47,
+      "validation_split_sha256": "f2a832f4b1555f8ea0f207aabf6a834388a4f45ea0cf2ab64154166985c31013",
+      "order_evidence": "DTD saved validation_indices match the audit exclusion mask; labels match the audited path order",
+      "audit_sha256": "1a7d00e94f6e3c5692c9c667db5859170ea4f30fa373c13ab4e878e4f34e3da1",
+      "runs": {
+        "linear": {
+          "prediction": "results/development/dtd/linear/seed42/validation_last_without_training_duplicates.npz",
+          "prediction_sha256": "94c4ba1e7d4c88996abdce4534692ef661fe0998e233534eda54f4a0062c477b",
+          "result_sha256": "fe707c5cdbb1ed505b602db6c8eab0ac595f341ffb91ce8290cdae6cee7b5720",
+          "provenance_sha256": "b85515a832a3ae423bfcb8a9963df892887e47c4bf285e358180f2dd5e34dc2b",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "lora": {
+          "prediction": "results/development/dtd/lora/seed42/validation_last_without_training_duplicates.npz",
+          "prediction_sha256": "8f2b6cbaa8227833c9f4df5182123ff218ebfc840a0ee06e03ff2d915d18054a",
+          "result_sha256": "4c7875f31eff26c776173b500316551f64ac6b99d4e979660d11a21a77225c38",
+          "provenance_sha256": "4381e9d104c98957fc8a1a2eea869271eec4a13e7c11a27da16a38925fc22656",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "ssf": {
+          "prediction": "results/development/dtd/ssf/seed42/validation_last_without_training_duplicates.npz",
+          "prediction_sha256": "34c10f59b4134000f6bff5fe5cc3e9a943536ccc073a96cb4f2e12d480f5b762",
+          "result_sha256": "02bc0b967e54917348a67edf3881d699373570f4f196156399f09dbc7f7cf4c5",
+          "provenance_sha256": "9799bf9f88753ebe326fa11242976b2f750896b9ead2928a927ccd96f4bff1e7",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "convpass": {
+          "prediction": "results/development/dtd/convpass/seed42/validation_last_without_training_duplicates.npz",
+          "prediction_sha256": "18e251f258adb4811526dea46229dcad35355a5b3f6515976214abc7073e65dd",
+          "result_sha256": "6b3adb254cad58955f1cb7eb0c27113c587e9865f9477eb737f95600b5367c14",
+          "provenance_sha256": "33e11a504585bc48a5b0285fb403d481020cb1d1318448e979e02b2330d57e81",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        }
+      }
+    },
+    {
+      "dataset": "resisc45",
+      "n": 200,
+      "class_count": 45,
+      "validation_split_sha256": "4e3a80ad613bc69d7ba541a80a8713921cc7c48ca958a7997a7529d5cd332d3f",
+      "order_evidence": "All methods share the audited val200 split hash; target sequence matches the ordered audit records; the runner exported with shuffle=False and asserted targets against val200.txt before saving",
+      "audit_sha256": "d64df15f7d22455fa945a122f2f9621de12bbbe63df7596d3dad80a7970e39fc",
+      "runs": {
+        "linear": {
+          "prediction": "results/development/resisc45/linear/seed42/validation_last.npz",
+          "prediction_sha256": "ca26da91e4316fbf86787e5435f5e1f071a03c456bef66426690aad5801369e7",
+          "result_sha256": "9274e7a8ec98850f9a5764e6235ac069adce75c8ce5f98220b8a2f2670010971",
+          "provenance_sha256": "3e9bfcebbdc1c72768cb3dae9b27ca057385dcc12a8f9c909e46278e810cece5",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "lora": {
+          "prediction": "results/development/resisc45/lora/seed42/validation_last.npz",
+          "prediction_sha256": "ed19b6bb57a73b9d423cee37aed15400c908895d446b2720e7819ba6b7d8c8ba",
+          "result_sha256": "0dbc87ea37ed25744601ec63a1b87fb6b919a0aa2447eb95b29a6eccf5eecdab",
+          "provenance_sha256": "e5043d4e567eb40254d7489fa731ff96a0803e3d38b63ff85d0622865ccee59d",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "ssf": {
+          "prediction": "results/development/resisc45/ssf/seed42/validation_last.npz",
+          "prediction_sha256": "a993998a5da43e7ef1340045524aec942dee8c6e06d6cd024dfd418d59562425",
+          "result_sha256": "1e540bdcfed27c961742d071e924f735ce2d7d5083a3b3bf982a6ed6b703cde6",
+          "provenance_sha256": "267a004ad99df12abfaa65d238b834bddf549a3705ff7bba9aa2a7898bee5c8d",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "convpass": {
+          "prediction": "results/development/resisc45/convpass/seed42/validation_last.npz",
+          "prediction_sha256": "9b3748c87e93fbd8b3e674ddae002a1a2ade00f061ce69067e87ebfc9fb2a2f5",
+          "result_sha256": "3e6cf45ee8a39e146de1c82ed1af31f6d27f4fbd8999741ba87864162033ec05",
+          "provenance_sha256": "fdf94d1b18fc7c58144f329e6bb205e95055b773f4246b1175b31ca2d2640d48",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        }
+      }
+    },
+    {
+      "dataset": "svhn",
+      "n": 200,
+      "class_count": 10,
+      "validation_split_sha256": "3936a89ea440ab74371959821d62c89ae8cc5424b54dff9d6f918e84b7134e24",
+      "order_evidence": "All methods share the audited val200 split hash; target sequence matches the ordered audit records; the runner exported with shuffle=False and asserted targets against val200.txt before saving",
+      "audit_sha256": "eb70e36f4c5cbc08b23135c356b52d8ba8689b33eb2e8a59b41f8df1b6918f2f",
+      "runs": {
+        "linear": {
+          "prediction": "results/development/svhn/linear/seed42/validation_last.npz",
+          "prediction_sha256": "3dae863c27e4f0f00ad4c00e1e7d453bd46668b15ccbce14a49ed39aeaad0429",
+          "result_sha256": "a186bb84ba6625c4d7313618b7236ebc238a5a26677ab8b279039f69f8af0dfa",
+          "provenance_sha256": "5304311202db37aa35c572254f6a1c9255c77182606f5394220214699c30ee1e",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "lora": {
+          "prediction": "results/development/svhn/lora/seed42/validation_last.npz",
+          "prediction_sha256": "933f5536cca1bb91cb13b1a8c0b3f70064ef289d33261eb40bbf90bae7ce52de",
+          "result_sha256": "6b47a8bbb07078f526883273c192726cbd276929b05f688f1c52cddeb38029f7",
+          "provenance_sha256": "37690d45740d29693e2d007faa3dfed67371e95c751cc46b009048249077d821",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "ssf": {
+          "prediction": "results/development/svhn/ssf/seed42/validation_last.npz",
+          "prediction_sha256": "8609b349b535323e6bc276501a1201196f362af44c841813ce29bfedece4db02",
+          "result_sha256": "40332f708db23ea7420ba406b3967979875b7f8ef9f6542f8e3c76f3677a2946",
+          "provenance_sha256": "67d47813a4c6f9a12025aa4b29415faf330e24e6d9b05ffce8cc5e0335f098d4",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "convpass": {
+          "prediction": "results/development/svhn/convpass/seed42/validation_last.npz",
+          "prediction_sha256": "6b29a42a6deb073fd2557b0532a8ca20a17f417920d392bd60f60738ed5fa893",
+          "result_sha256": "9808ce5a794f5f15f175237ddbd2b2cf8620ee62f173a01f3a0506fa241fc505",
+          "provenance_sha256": "6b3e5ca3b3f47df34f5cd1be7953dcf45f6707f418ae65efd7e376ae3e8803c8",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        }
+      }
+    },
+    {
+      "dataset": "patch_camelyon",
+      "n": 200,
+      "class_count": 2,
+      "validation_split_sha256": "3b1eeedd822b0a94cbf32afd155bb80829f68ed2fde71a7d2fac62d50a5d592a",
+      "order_evidence": "All methods share the audited val200 split hash; target sequence matches the ordered audit records; the runner exported with shuffle=False and asserted targets against val200.txt before saving",
+      "audit_sha256": "264766a858998050bb30034b8337dcc1be4b78e6afd37662f3901bc57ebcd83f",
+      "runs": {
+        "linear": {
+          "prediction": "results/development/patch_camelyon/linear/seed42/validation_last.npz",
+          "prediction_sha256": "ad33c12ced04501be4f3051e2b992be95cfea4bb3421d6feba9c26a2e7601fac",
+          "result_sha256": "edfb03568e973325570043c91930369c2ed9aa1b3f837b67b2872369fc2c8afe",
+          "provenance_sha256": "232d31f80afc3ef20565391220a613a4aecfdbb85477e056a33af98e52d43f6e",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "lora": {
+          "prediction": "results/development/patch_camelyon/lora/seed42/validation_last.npz",
+          "prediction_sha256": "077ad41bab18f9005e97f39ff8083857c598665911579e841a7fbba5d76cfe23",
+          "result_sha256": "92fe167e2b6b4f6b3824d3cc04a28d8602ab190e57a303fa393bbbd2fe397b59",
+          "provenance_sha256": "cdbbbae1eb2b38fbf480f8d9e830ee03e151eb44190ee6c13a30109df1e1000b",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "ssf": {
+          "prediction": "results/development/patch_camelyon/ssf/seed42/validation_last.npz",
+          "prediction_sha256": "1ef726cd185758d4d3aa88fea5fdd02036cb38ecc5ad2a91c9520a285e342397",
+          "result_sha256": "4e0da9a9f09045e84c7165e495c76a9c78a781f979bf6b54a6ae9a18f358cbfa",
+          "provenance_sha256": "68c42b9f61e69d20c91bd5559d82de697428a7eec47de62f892a8317a0a7f637",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        },
+        "convpass": {
+          "prediction": "results/development/patch_camelyon/convpass/seed42/validation_last.npz",
+          "prediction_sha256": "58e4ec22803d77fcb77c288d3d0ffde489cba9877f0f4d13faf71a91cecbbe0b",
+          "result_sha256": "a02d33e0deea0f91d65db1c8e3b193b793c3200c58ebacfd8ba71c47ae2106e8",
+          "provenance_sha256": "dbc338bd5e4b0a54427e3a6b0119efd4f700c3b4345f0b2aec139f02446c6e74",
+          "checkpoint_epoch": 100,
+          "training_seed": 42
+        }
+      }
+    }
+  ],
+  "environment": {
+    "python": "3.10.22",
+    "numpy": "1.24.4",
+    "pandas": "1.5.3",
+    "scipy": "1.10.1",
+    "matplotlib": "3.7.5"
+  },
+  "checks": {
+    "label_and_audit_order_match": true,
+    "common_initialization": true,
+    "calibration_evaluation_disjoint": true,
+    "positive_temperature_preserves_argmax": true,
+    "routing_endpoints_match": true,
+    "random_fallback_counts_match_each_fold": true
+  },
+  "source_sha256": {
+    "scripts/calibration_routing_pilot.py": "9b265c04c50a9d99b989ba7eed96c991f7236e6609450aa83a9d02880a1015f9",
+    "scripts/multi_pair_pilot.py": "297c35e972e7b6e016971465ef25a7bb37a15e85ce3d9d7ef79519c571a0c1cc"
+  },
+  "row_counts": {
+    "calibration_metrics": 96,
+    "fold_temperatures": 240,
+    "reliability_bins": 960,
+    "fold_assignments": 2397,
+    "routing_metrics": 9504,
+    "routing_decisions": 86292,
+    "oracle_diagnostics": 24,
+    "class_coverage": 104,
+    "calibration_summary": 32,
+    "routing_summary": 432
+  },
+  "figures": [
+    "dtd-calibration.png",
+    "dtd-calibration.svg",
+    "dtd-reliability.png",
+    "dtd-reliability.svg",
+    "dtd-routing.png",
+    "dtd-routing.svg",
+    "dtd-error-overlap.png",
+    "dtd-error-overlap.svg",
+    "patch_camelyon-calibration.png",
+    "patch_camelyon-calibration.svg",
+    "patch_camelyon-reliability.png",
+    "patch_camelyon-reliability.svg",
+    "patch_camelyon-routing.png",
+    "patch_camelyon-routing.svg",
+    "patch_camelyon-error-overlap.png",
+    "patch_camelyon-error-overlap.svg",
+    "resisc45-calibration.png",
+    "resisc45-calibration.svg",
+    "resisc45-reliability.png",
+    "resisc45-reliability.svg",
+    "resisc45-routing.png",
+    "resisc45-routing.svg",
+    "resisc45-error-overlap.png",
+    "resisc45-error-overlap.svg",
+    "svhn-calibration.png",
+    "svhn-calibration.svg",
+    "svhn-reliability.png",
+    "svhn-reliability.svg",
+    "svhn-routing.png",
+    "svhn-routing.svg",
+    "svhn-error-overlap.png",
+    "svhn-error-overlap.svg"
+  ],
+  "files_sha256": {
+    "MENTORING_BRIEF.md": "ea45989fca3e9dbe14c16a8614ef6134a83e15eabb097dd5b98fa5a1e84f2a14",
+    "calibration_metrics.csv": "2a665b207f505a7824d8dac4e1daa41a49a07417e61ed6557377e0430e6d9f45",
+    "calibration_summary.csv": "369f3173e030de19725baf1430842bf14115656c468559f9c182ef42120d3f12",
+    "class_coverage.csv": "14cba63cb461571e67be12f3fadcaca6c48bb22602a01b69614847d163731b21",
+    "dtd-calibrated-oof.npz": "6b3d6236f6863aba8bf71082f3dcee12e2a1675e2bef3dbb384e2a734a31906d",
+    "dtd-calibration.png": "ada35d3f05a6728a9a5c5148be79a9b6607b2d42cb92f4e41001e1046e30b515",
+    "dtd-calibration.svg": "96ab29f28c9fd7236871f4bcb8d300df8c5a37e1785234d5418ea2b8c8b18ec0",
+    "dtd-error-overlap.png": "5805278d008c38f0ebac8693ef09a08301c74c6b6b6f4cca46d2be6dbc6ea663",
+    "dtd-error-overlap.svg": "91b3112f8dfe8d43f28ec0406e5bd9219e63739fe9c3163c033f14b8b5a39138",
+    "dtd-reliability.png": "dde8a2fe085ca891f4a332dd967a4932ec6bace338c1fab1cf92e640bc4f7fa0",
+    "dtd-reliability.svg": "197a2f63ffe4612aa035b7b511160c00a7bde6b65a97b065a93e835028df5383",
+    "dtd-routing.png": "410a399d1f419784ec86e63d22b53f55aa35025e41ef6f4d5cf2309364da1d95",
+    "dtd-routing.svg": "8866900408ff571f9a0448cb4ac363186e0dfa59117d18fabcbc555740ff9bfe",
+    "fold_assignments.csv": "aa23b94ff17c74bb8689449b82d82adcb90e6b8d5192142af43d87fb88c5a760",
+    "fold_temperatures.csv": "d1dcf78b03a064c794c713dc55dd6b6430b9c67c1d114e7bd09ced2c8c30ed4f",
+    "oracle_diagnostics.csv": "507224ad61103696f506a0e7b94cd4ab91141b6b2eed76808f0db722963e907d",
+    "patch_camelyon-calibrated-oof.npz": "3f3e18be76738eb4c52f09fe0c4c7edb1f9e3c06517720c9724b0f4126915dea",
+    "patch_camelyon-calibration.png": "e5386562a490d48756185d83a4a0fae24d5e7ddac2e47977360b03bbfb8129bd",
+    "patch_camelyon-calibration.svg": "3c8f9fa8ade7ec8dd794bbf73b635b6b3a6df98beb56bf8fe409061bdd7db2d3",
+    "patch_camelyon-error-overlap.png": "2fa2c1ca71d0bbe62702623cba7c47c6c8a4e146233c4ecf33959730379afbf3",
+    "patch_camelyon-error-overlap.svg": "42cab8a4c9ad94d9cbd5e31d4016324f55faada8f007cd6509a2e7ab8767b63d",
+    "patch_camelyon-reliability.png": "02bda69430eecf2b6e0ecce2a843126e9f46b12108259e750f195dd9a057c9aa",
+    "patch_camelyon-reliability.svg": "394140fbda89112e2d250d634be2f556b55df3933efe21f3df75ed7f79c6bdc0",
+    "patch_camelyon-routing.png": "c5d6620cfc5dc13f75fd47d8a711099d0493bde9618836ccf1c99018c15dffb3",
+    "patch_camelyon-routing.svg": "b03cc0cc129a43abfbf9d0d41d2ee18bc2e0bcf3d72d84d44f75bbcb6b8f7154",
+    "reliability_bins.csv": "7450a0649732de6e236e3f7b0acc0f509bf676c24cd0a43e79ee3a6c72fa1e58",
+    "resisc45-calibrated-oof.npz": "51a44a6045d939cd029d58d42b0aeac96f0cea121c2955fc866d114b174d42bd",
+    "resisc45-calibration.png": "5a30df0134cd5e6f42185d2ee45abda94b53d6a7d6b35b00f5b60cb6e19838a1",
+    "resisc45-calibration.svg": "3b402d0dafba8390b67fc4e1140a555442a1f867f2b1feba2a3b8da80bf38b97",
+    "resisc45-error-overlap.png": "2ce051959ad3bbdeb9b66c7b5f839e0d0bc46ff34533e9ac81052285916321bb",
+    "resisc45-error-overlap.svg": "d70cd4ec2febb6683e6c8f70431c8c20f79e3ca37d8e21c69ff1b0638a010b37",
+    "resisc45-reliability.png": "27698b205575afef0eabe826e6297a6dfc2b585ff1c744a4e513d11e36ac450a",
+    "resisc45-reliability.svg": "42a71179e1bff6a4cb713405c9a59781df75d29d9c440cdf2d9a56563b4b0ac2",
+    "resisc45-routing.png": "dd220fae84f62fa17ee6fd4a2228f613853633859f3385ba867217cee4748e35",
+    "resisc45-routing.svg": "8eac3bd62c16f23c6fb7574ddb94905c7dda79b0a84c22c9692f832c7d6084d8",
+    "routing_decisions.csv": "3091f57bf7f9e201fff2cda8f72540e0720799e5869522d160cb8dc57af7e0a6",
+    "routing_metrics.csv": "0be01dd7e4baa58f36e7d0ac0edd941d0b4f24103aecb455958d3e0388e9f197",
+    "routing_summary.csv": "1753e54c34d8a388b6861c5e6c06c329653713afef69faba46174249521b50d3",
+    "svhn-calibrated-oof.npz": "1bc33904d39e5a9d80f2007567eb9b4b3a5960685a8afd44935d4c1bdc1f864d",
+    "svhn-calibration.png": "cdde2a588031e4ba049b1cdbf65b5864f71ec16bf1e7617ceb20eb13bcd26b12",
+    "svhn-calibration.svg": "913c1acb3bbf983b15d43c557223cc35a38903ccf7903f13ef3388c69a4cb9ce",
+    "svhn-error-overlap.png": "0b2a5470354e1bd4b666ca8fea5dd977c2f33211488d5576f3208a8792d7f526",
+    "svhn-error-overlap.svg": "4a12f01cdfabd54784c0624d1c4500075c9c29d0da7a47a41d72d3a317704241",
+    "svhn-reliability.png": "47f7e5d4ed99e4588c7740902a0cd1bc5cfb7d101145602b3c30dd800e862092",
+    "svhn-reliability.svg": "72258c2ceb49dce48c33aa918d488aab1400aa4e7b6620fb80829ec74d585808",
+    "svhn-routing.png": "92f86dc54c959b83c5137594e686956553e5ebfb1639640831108db9629c711e",
+    "svhn-routing.svg": "79ce975cdce86b2ade77560edc77825291c59a4df115f57c8daedf9d2349b450"
+  }
+}

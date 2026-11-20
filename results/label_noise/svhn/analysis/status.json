@@ -1,0 +1,22 @@
+{
+  "validation_n": 200,
+  "training_seed": 42,
+  "target_fallback_fraction": 0.25,
+  "methods": [
+    "convpass",
+    "ssf",
+    "lora"
+  ],
+  "verified_noisy_runs": [
+    {
+      "method": "convpass",
+      "accuracy": 0.83
+    },
+    {
+      "method": "ssf",
+      "accuracy": 0.775
+    }
+  ],
+  "noisy_ensemble_evaluated": false,
+  "final_test_used": false
+}

@@ -1,0 +1,41 @@
+dataset,method,training_seed,epochs,learning_rate,weight_decay,effective_batch,microbatch,method_settings
+oxford_flowers102,linear,42,100,0.001,0.0001,,,"{""lora_rank"": 8}"
+oxford_flowers102,lora,42,100,0.001,0.0001,64.0,8.0,"{""lora_rank"": 8}"
+oxford_flowers102,ssf,42,100,0.001,0.0001,64.0,8.0,"{""convpass"": {""bottleneck"": 8, ""scale"": 0.1, ""xavier_init"": false}}"
+oxford_flowers102,convpass,42,100,0.01,0.0001,64.0,8.0,"{""convpass"": {""bottleneck"": 8, ""scale"": 0.1, ""xavier_init"": false}}"
+oxford_flowers102,bitfit,42,100,0.01,0.001,64.0,8.0,{}
+oxford_flowers102,adaptformer,42,100,0.01,0.0001,64.0,8.0,"{""adaptformer"": {""bottleneck"": 16, ""scale"": 0.2}}"
+oxford_flowers102,vpt_deep,42,100,0.01,0.001,64.0,8.0,"{""vpt_num"": 10}"
+oxford_flowers102,fact_tt,42,100,0.001,0.001,64.0,8.0,"{""fact_tt"": {""dim"": 32, ""scale"": 1}}"
+dtd,linear,42,100,0.001,0.0001,64.0,8.0,{}
+dtd,lora,42,100,0.001,0.0001,64.0,8.0,"{""lora_rank"": 1}"
+dtd,ssf,42,100,0.01,0.001,64.0,8.0,{}
+dtd,convpass,42,100,0.01,0.001,64.0,8.0,"{""convpass"": {""bottleneck"": 8, ""scale"": 1, ""xavier_init"": false}}"
+dtd,bitfit,42,100,0.01,0.0001,64.0,8.0,{}
+dtd,adaptformer,42,100,0.01,0.001,64.0,8.0,"{""adaptformer"": {""bottleneck"": 32, ""scale"": 0.1}}"
+dtd,vpt_deep,42,100,0.01,0.0001,64.0,8.0,"{""vpt_num"": 100}"
+dtd,fact_tt,42,100,0.01,0.001,64.0,8.0,"{""fact_tt"": {""dim"": 32, ""scale"": 0.01}}"
+resisc45,linear,42,100,0.01,0.001,64.0,8.0,{}
+resisc45,lora,42,100,0.001,0.0001,64.0,8.0,"{""lora_rank"": 32}"
+resisc45,ssf,42,100,0.001,0.001,64.0,8.0,{}
+resisc45,convpass,42,100,0.001,0.001,64.0,8.0,"{""convpass"": {""bottleneck"": 16, ""scale"": 1, ""xavier_init"": false}}"
+resisc45,bitfit,42,100,0.01,0.0001,64.0,8.0,{}
+resisc45,adaptformer,42,100,0.01,0.0001,64.0,8.0,"{""adaptformer"": {""bottleneck"": 16, ""scale"": 0.2}}"
+resisc45,vpt_deep,42,100,0.01,0.0001,64.0,8.0,"{""vpt_num"": 5}"
+resisc45,fact_tt,42,100,0.001,0.0001,64.0,8.0,"{""fact_tt"": {""dim"": 16, ""scale"": 10}}"
+svhn,linear,42,100,0.01,0.001,64.0,8.0,{}
+svhn,lora,42,100,0.001,0.0001,64.0,8.0,"{""lora_rank"": 32}"
+svhn,ssf,42,100,0.01,0.0001,64.0,8.0,{}
+svhn,convpass,42,100,0.01,0.0001,64.0,8.0,"{""convpass"": {""bottleneck"": 8, ""scale"": 10, ""xavier_init"": false}}"
+svhn,bitfit,42,100,0.01,0.0001,64.0,8.0,{}
+svhn,adaptformer,42,100,0.01,0.0001,64.0,8.0,"{""adaptformer"": {""bottleneck"": 32, ""scale"": 0.2}}"
+svhn,vpt_deep,42,100,0.001,0.001,64.0,8.0,"{""vpt_num"": 50}"
+svhn,fact_tt,42,100,0.001,0.0001,64.0,8.0,"{""fact_tt"": {""dim"": 32, ""scale"": 100}}"
+patch_camelyon,linear,42,100,0.01,0.0001,64.0,8.0,{}
+patch_camelyon,lora,42,100,0.001,0.0001,64.0,8.0,"{""lora_rank"": 8}"
+patch_camelyon,ssf,42,100,0.001,0.0001,64.0,8.0,{}
+patch_camelyon,convpass,42,100,0.01,0.0001,64.0,8.0,"{""convpass"": {""bottleneck"": 8, ""scale"": 0.01, ""xavier_init"": false}}"
+patch_camelyon,bitfit,42,100,0.01,0.0001,64.0,8.0,{}
+patch_camelyon,adaptformer,42,100,0.001,0.0001,64.0,8.0,"{""adaptformer"": {""bottleneck"": 16, ""scale"": 0.1}}"
+patch_camelyon,vpt_deep,42,100,0.01,0.001,64.0,8.0,"{""vpt_num"": 5}"
+patch_camelyon,fact_tt,42,100,0.01,0.0001,64.0,8.0,"{""fact_tt"": {""dim"": 16, ""scale"": 0.1}}"

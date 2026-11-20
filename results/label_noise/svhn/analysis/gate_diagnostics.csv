@@ -1,0 +1,7 @@
+training_noise_percent,split_seed,strategy,n,selected,first_errors,errors_selected,errors_missed,errors_fixed,correct_broken,selection_differs_from_raw
+0,42,selective,200,49,20,20,0,7,3,6
+0,42,raw_gate_calibrated_fusion,200,51,20,20,0,7,4,0
+0,43,selective,200,53,20,20,0,7,3,3
+0,43,raw_gate_calibrated_fusion,200,52,20,20,0,7,4,0
+0,44,selective,200,50,20,20,0,7,3,9
+0,44,raw_gate_calibrated_fusion,200,49,20,18,2,7,4,0

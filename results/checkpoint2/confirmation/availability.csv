@@ -1,0 +1,7 @@
+dataset,training_seed,first_method,second_method,status,missing_epoch100_artifact
+svhn,42,convpass,ssf,evaluated,
+svhn,43,convpass,ssf,evaluated,
+svhn,44,convpass,ssf,evaluated,
+patch_camelyon,42,convpass,linear,evaluated,
+patch_camelyon,43,convpass,linear,evaluated,
+patch_camelyon,44,convpass,linear,evaluated,
