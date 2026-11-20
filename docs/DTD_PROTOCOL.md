@@ -1,8 +1,6 @@
 # DTD development baselines
 
-These are new DTD runs. The completed Flowers102 runs remain the CP1 record.
-
-Use the existing pinned training environment and upstream commit described in [the training setup](TRAINING_PROTOCOL.md). DTD uses 800 training images, 200 validation images, and a new 47-class classifier. Initialize every method from the same supervised ImageNet-21K ViT-B/16 checkpoint.
+DTD uses 800 training images, 200 validation images, and a 47-class classifier. The runs use the [pinned training environment](TRAINING_PROTOCOL.md) and the same supervised ImageNet-21K ViT-B/16 checkpoint.
 
 All runs use seed 42, 100 epochs, AdamW, cosine decay, 10 warmup epochs, drop path 0.1, FP32, effective batch 64, microbatch 8, validation batch 8, and zero loader workers. Preprocessing remains the upstream resize to 224 x 224, ToTensor, no normalization, and no augmentation. Each epoch uses 768 images because the upstream loader drops the incomplete effective batch.
 
@@ -19,9 +17,9 @@ Adapter counts exclude the common 36,143-parameter classifier: Linear 0, LoRA 36
 
 ## Audit existing data
 
-Reuse the prepared VTAB directory and pretrained checkpoint on the training node. The audit checks split metadata and decodes every training and validation image. It reads test split metadata for overlap checks and does not open test images or generate test predictions.
+The audit checks split metadata and decodes the training and validation images. It reads test split metadata for overlap checks without opening test images or generating test predictions.
 
-The A100 audit found one exact cross-split duplicate: validation index 0 matches training index 564. The 199 remaining validation images still cover all 47 classes. Keep the original 800/200 split for reproduction tracking and also report results on the 199-image subset without this training duplicate. The audit records the paths, labels, hashes, and row mask. It rejects unexpected overlap counts and conflicting labels.
+Validation index 0 matches training index 564. The analysis reports both the original split and the 199-image subset after exclusion. All 47 classes remain in the subset. The audit records paths, labels, hashes, and the exclusion mask. It rejects unexpected overlap counts and conflicting labels.
 
 ```bash
 .venv/bin/python scripts/audit_dtd.py
@@ -67,4 +65,4 @@ GPU utilization and total device VRAM describe the selected device, including co
 
 Record accuracy, NLL, multiclass Brier, learning curves, and error analysis for each completed DTD run. Keep the outputs separate from results/checkpoint1 and retain the model checkpoints on the training node.
 
-Final test evaluation, repeated seeds, and hyperparameter search are outside this baseline stage. The DTD training status must be recorded from live run outputs.
+Final test evaluation, repeated seeds, and hyperparameter search are outside this DTD baseline.

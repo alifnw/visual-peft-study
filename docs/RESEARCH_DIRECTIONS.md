@@ -1,6 +1,6 @@
-# Arah kontribusi setelah Checkpoint 1
+# Usulan eksperimen Checkpoint 1
 
-Ketiga arah di bawah berangkat dari partial reproduction dengan analisis eksploratif pada konfigurasi tetap. Mekanisme yang diusulkan belum dilatih atau dievaluasi. Hasil ensemble yang sudah tersedia adalah averaging biasa pada validation, terpisah dari evaluasi usulan kebijakan.
+Dokumen ini mencatat hipotesis awal dari eksperimen Flowers102 dengan konfigurasi tetap. Status dan hasil selective fusion yang dikerjakan sesudahnya dibahas di [notebook Checkpoint 2](../notebooks/02_selective_fusion_checkpoint2.ipynb).
 
 ## A. Confidence-based Selective Fusion
 
@@ -63,12 +63,6 @@ Bandingkan pemilihan berdasarkan accuracy saja, parameter count saja, resource s
 ### Posisi terhadap literatur
 
 Appendix A paper utama menyatakan bahwa studi tidak berfokus pada memory usage dan FLOPs. Khan dan Siddique mengevaluasi PET dengan parameter budget dan calibration pada klasifikasi chest X-ray multimodal. Usulan ini menguji pemilihan konfigurasi visual PEFT berdasarkan kelayakan host/GPU aktual, biaya profiling dan kualitas probabilitas pada satu pipeline yang sama. Bentuk kontribusinya adalah evaluasi terkontrol beserta kebijakan pemilihan konfigurasi.
-
-## Prioritas eksperimen
-
-A paling dekat dengan bukti error diversity yang sudah tersedia. C menjadi alternatif praktis yang terkait blocker nyata dan batas studi paper. B menjadi arah robustness yang memerlukan lebih banyak training serta pendalaman full text pembanding.
-
-Ketiga arah masih berupa usulan eksperimen dengan pertanyaan penelitian, mekanisme, baseline dan ukuran keberhasilan yang ditetapkan. Gate, noise weighting dan resource selector belum dievaluasi.
 
 ## Referensi pembanding
 
