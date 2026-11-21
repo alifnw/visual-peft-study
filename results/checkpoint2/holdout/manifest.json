@@ -1,0 +1,16 @@
+{
+  "evaluation": "independent_clean_label_svhn_test",
+  "sample_count": 26032,
+  "training_seeds": [
+    42,
+    43,
+    44
+  ],
+  "score_rows_recomputed": 72,
+  "evidence_archive_remote_sha256": "7f29deb212f8a97f3c8548adb26f12c995fab3727c638f71d9826bcc6e8b298d",
+  "output_sha256": {
+    "svhn-test-per-seed.csv": "b72566266e54779cced568b48be9997cec70866722fee042d29a2dcea64b85c6",
+    "holdout-policy.json": "f8cec438e8c36e2e978670deb1c2de65720aba661f53f321634ef029fd559fbb",
+    "test-split-integrity.jsonl": "8dae205463d778e79da5c5e51e16471381a752d7e55f127e93e288f6162d90a5"
+  }
+}

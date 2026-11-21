@@ -1,0 +1,2 @@
+{"dataset": "patch_camelyon", "test_rows": 32768, "identical_to_training": 1, "identical_to_validation": 0, "unique_development_overlap_hashes": 1, "within_test_exact_duplicate_rows": 3385, "overlapping_literal_paths": 0, "conflicting_overlap_labels": 0}
+{"dataset": "svhn", "test_rows": 26032, "identical_to_training": 0, "identical_to_validation": 0, "unique_development_overlap_hashes": 0, "within_test_exact_duplicate_rows": 0, "overlapping_literal_paths": 0, "conflicting_overlap_labels": 0}

@@ -1,0 +1,7 @@
+training_noise_percent,split_seed,fallback_count,errors_fixed,correct_predictions_broken,selected_errors_not_fixed,first_errors_missed
+0,42,49,4,1,16,0
+0,43,53,4,1,16,0
+0,44,50,4,1,16,0
+20,42,53,3,4,21,10
+20,43,52,3,3,22,9
+20,44,49,3,3,21,10

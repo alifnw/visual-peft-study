@@ -1,4 +1,4 @@
-# Four-dataset calibration and selective-routing pilot
+# Four-dataset screening for calibration and selective routing
 
 This analysis reads saved epoch-100 development logits for Linear, LoRA, SSF, and ConvPass. It runs on CPU and does not load model checkpoints, read image datasets, launch training, or evaluate final test data.
 
@@ -12,7 +12,7 @@ Temperature scaling uses five folds and partition seeds 42, 43, and 44. Each fol
 
 All six unordered pairs can be evaluated in both directions. Low first-model confidence triggers fallback. Thresholds are derived from calibration confidence for target rates 25%, 50%, and 75%. Replacement uses the second model's calibrated probabilities. Averaging uses equal-weight calibrated probabilities. Both rules use the same gate.
 
-Random routing uses 20 seeds and exactly matches the gate's realized fallback count in each evaluation fold. It is a matched-budget diagnostic using evaluation batch counts. The original pilot used a different Bernoulli random comparator and remains separately archived.
+Random routing uses 20 seeds and exactly matches the gate's realized fallback count in each evaluation fold. It is a matched-budget diagnostic using evaluation batch counts. The archived two-dataset experiment used a Bernoulli random comparator that matched fallback in expectation.
 
 ## Run
 
@@ -28,7 +28,7 @@ From the repository root with the analysis environment:
 
 Specify directed pairs to run a subset. For example, `--pairs lora:ssf ssf:lora`. An existing output directory is reusable only for the same dataset, pair and rule configuration. Use a new output folder for another configuration.
 
-The original two-dataset invocation without new arguments retains the initial Linear-to-LoRA pilot behavior. Do not use its historical output folder for the expanded protocol.
+The default invocation reproduces the initial two-dataset Linear-to-LoRA experiment. Use a separate output folder for the four-dataset protocol.
 
 ## Outputs
 
@@ -38,7 +38,7 @@ The output contains calibration scores, fold temperatures, reliability bins with
 
 Oracle accuracy selects between the two single-model predictions using labels. It is a diagnostic upper bound for replacement on that pair. Averaging can predict another class and is not bounded by that oracle.
 
-The pilot section of the [Checkpoint 2 notebook](../notebooks/02_selective_fusion_checkpoint2.ipynb) reads the verified joint results. The [artifact guide](CHECKPOINT2_ARTIFACTS.md) describes the contributor snapshots and the separate evaluation across training seeds.
+The [pair screening section of the Checkpoint 2 notebook](../notebooks/02_selective_fusion_checkpoint2.ipynb#pair-screening) reads the verified joint results. The [artifact guide](CHECKPOINT2_ARTIFACTS.md) describes the contributor snapshots and the separate evaluation across training seeds.
 
 ## Interpretation
 

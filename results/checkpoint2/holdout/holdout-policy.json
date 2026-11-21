@@ -1,0 +1,207 @@
+{
+  "comparators": [
+    "calibrated_first",
+    "calibrated_second",
+    "always_on_averaging",
+    "matched_random"
+  ],
+  "dataset_splits": {
+    "patch_camelyon": {
+      "audit_sha256": "264766a858998050bb30034b8337dcc1be4b78e6afd37662f3901bc57ebcd83f",
+      "development_calibration_rows": 200,
+      "expected_test_list_sha256": "4908bad591d67a19b82e88af056fadf9a020bba6566b8837974f121643718b4c",
+      "expected_test_rows": 32768,
+      "mirror_revision": "a1c257fbbeebd3260c0a201fe6a6c9916b56eee7",
+      "patient_slide_split_verified": false
+    },
+    "svhn": {
+      "audit_sha256": "eb70e36f4c5cbc08b23135c356b52d8ba8689b33eb2e8a59b41f8df1b6918f2f",
+      "development_calibration_rows": 200,
+      "expected_test_list_sha256": "fc4e801a29733ad7094303e675f89227c5ea18655df943a34cc2b3ba0464b9fa",
+      "expected_test_rows": 26032,
+      "mirror_revision": "a1c257fbbeebd3260c0a201fe6a6c9916b56eee7",
+      "patient_slide_split_verified": false
+    }
+  },
+  "fallback_target_on_calibration": 0.25,
+  "fit_scope": "All 200 development-validation images per dataset, separately per training seed",
+  "fusion": "Equal-weight average of calibrated probabilities",
+  "gate": "Run secondary expert when calibrated primary max probability is below the frozen threshold",
+  "metrics": [
+    "top1_accuracy",
+    "mean_nll",
+    "mean_multiclass_brier",
+    "realized_fallback",
+    "calls_per_image"
+  ],
+  "policies": [
+    {
+      "confidence_threshold": 0.8932153934679864,
+      "dataset": "svhn",
+      "experts_in_order": [
+        {
+          "method": "convpass",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 1.9438542177616893,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "6b29a42a6deb073fd2557b0532a8ca20a17f417920d392bd60f60738ed5fa893",
+          "weights_sha256": "5d8e1ddbc130896c38f88969cfc406fd6c23ddb5e38fd7c837e25784701203a3"
+        },
+        {
+          "method": "ssf",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 2.4370074923258938,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "8609b349b535323e6bc276501a1201196f362af44c841813ce29bfedece4db02",
+          "weights_sha256": "a95e4c5501b8adf71c8f51f669604a6bedce4f1d116992be364ebb069c3d3b31"
+        }
+      ],
+      "training_seed": 42
+    },
+    {
+      "confidence_threshold": 0.9091746366799036,
+      "dataset": "svhn",
+      "experts_in_order": [
+        {
+          "method": "convpass",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 1.904694745241683,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "ab21c745ec9216bf7c28c685bcdd1dc808de8cedf8b634c0e77f750bd22d8d20",
+          "weights_sha256": "1a81c268964002602d8694aa03b2186fa2f01eaee338c4d0e3425dbaaab84230"
+        },
+        {
+          "method": "ssf",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 2.495809122762777,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "0a25233aa1332ed23dd6f9403ece6e5636b3f09b55c417334046131e7315028b",
+          "weights_sha256": "3d1cc92199f2b7cfc6e6f12390731a8be9462115af7f393befc8120d1a435623"
+        }
+      ],
+      "training_seed": 43
+    },
+    {
+      "confidence_threshold": 0.8985647254273771,
+      "dataset": "svhn",
+      "experts_in_order": [
+        {
+          "method": "convpass",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 1.9868711100427536,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "81e2bb39ccbdec6b83afd9b63a798862863b27f5b146e96ccd8cfab833ad9267",
+          "weights_sha256": "bdf6fb44d4728e882b4dce4c4022537a72440e7daff9d9c3c2e265f5eba55c5e"
+        },
+        {
+          "method": "ssf",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 2.4425963148159844,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "cea921006ffb87da7bc07e857eda6214134b76be3b3890db44f23300d333416d",
+          "weights_sha256": "a1c8547a261f6da5b81ff691c3ec573fb2b9afc9582ecc36725a6ac06325fc68"
+        }
+      ],
+      "training_seed": 44
+    },
+    {
+      "confidence_threshold": 0.9089072092398016,
+      "dataset": "patch_camelyon",
+      "experts_in_order": [
+        {
+          "method": "convpass",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 4.042514341370311,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "58e4ec22803d77fcb77c288d3d0ffde489cba9877f0f4d13faf71a91cecbbe0b",
+          "weights_sha256": "74586d7747062cc4d7fcdb9f233f3811435137a896ba50f04130e8da2c316c10"
+        },
+        {
+          "method": "linear",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 0.8065434374630301,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "ad33c12ced04501be4f3051e2b992be95cfea4bb3421d6feba9c26a2e7601fac",
+          "weights_sha256": "e93c1cdaf9a1fcfeb8f97beb4afd9a7f447e13afb96dd829ff9b2b4c329dff91"
+        }
+      ],
+      "training_seed": 42
+    },
+    {
+      "confidence_threshold": 0.9226870876413584,
+      "dataset": "patch_camelyon",
+      "experts_in_order": [
+        {
+          "method": "convpass",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 3.3097653872775705,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "e93dc184646ff963707d73cde826f2ab460404b44fd05eba083714a780542826",
+          "weights_sha256": "af1e83390e6a281303b9d7205c3eb70e192fdcbb12c3e76e3600ebcf803bc5d3"
+        },
+        {
+          "method": "linear",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 0.8141400589395179,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "20f556f845237663c6b806c2d85146485eaddb6b37a74873258b6d0554a926de",
+          "weights_sha256": "2b9c88ed836ab74ec8c8cb8881ab34270a10ddadbfbf4085cef01347e4adf4c5"
+        }
+      ],
+      "training_seed": 43
+    },
+    {
+      "confidence_threshold": 0.907206607157472,
+      "dataset": "patch_camelyon",
+      "experts_in_order": [
+        {
+          "method": "convpass",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 4.209722994721345,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "7ee4677009c519f5768d315c9de2a8d3a46350da83fce05f7087dda0bb63c008",
+          "weights_sha256": "4eee79b371dc46cee18958be45320631ba96232ad8e7b9b997904d783ef0559c"
+        },
+        {
+          "method": "linear",
+          "pretrained_sha256": "ac7478131e1b77e5c2f0225849730bd19ee89cfffe600c2dfd2272b34a50a43d",
+          "temperature": 0.8083123018297522,
+          "temperature_boundary_optimum": false,
+          "validation_logits_sha256": "22c264cb98ec7288b4c6ed05dc89a41e1189a1a66e042a3581494e9493a8c8fc",
+          "weights_sha256": "7f852434bcaccc0d9c52f0ed57c9137e98c92b0c8f4e456f00e2a986ab1bea09"
+        }
+      ],
+      "training_seed": 44
+    }
+  ],
+  "protocol": "visual-peft-clean-holdout-v1",
+  "random_control": {
+    "draw_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61
+    ],
+    "matching": "Uniform sampling without replacement at the gate's exact realized count per test dataset and training seed"
+  },
+  "scope": "Image-level clean-label holdout on the audited mirror",
+  "test_inputs_read": false,
+  "test_predictions_generated": false,
+  "weights_archive_sha256": "cfa8da90e6159c17f0665659aa2b6fd218357af48e93cfc97ca9c783ce2f4391"
+}

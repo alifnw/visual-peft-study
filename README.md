@@ -4,8 +4,10 @@ Kelompok 1: Alif Negifta Wibawaputra and Charleen Samaeri Gulo
 
 Partial reproduction of [Mai et al., CVPR 2025](https://arxiv.org/abs/2409.16434), with experiments on probability calibration and confidence-based selective fusion for visual recognition.
 
+The [Checkpoint 2 report in FILKOM format](reports/checkpoint2-filkom-report.pdf) summarizes the study, evaluation, and limitations.
+
 - [Checkpoint 1: Flowers102](notebooks/01_flowers102_checkpoint1.ipynb) compares Linear, LoRA, and SSF under a fixed recipe.
-- [Checkpoint 2: Calibration and Selective Fusion](notebooks/02_selective_fusion_checkpoint2.ipynb) covers 40 epoch-100 baseline runs across five datasets and eight approaches, a four-dataset routing pilot, and a clean-label comparison at training seeds 42, 43, and 44.
+- [Checkpoint 2: Calibration and Selective Fusion](notebooks/02_selective_fusion_checkpoint2.ipynb) covers 40 epoch-100 baseline runs across five datasets, pair screening on four datasets, and evaluation across training seeds 42, 43, and 44.
 
 ## Results
 
@@ -13,11 +15,11 @@ On Flowers102, all three Checkpoint 1 models classified 198 of 200 validation im
 
 Checkpoint 2 evaluates ConvPass followed by SSF on SVHN and ConvPass followed by Linear on PatchCamelyon. At a 25% target fallback rate, selective averaging matched always-on averaging in validation accuracy in all six seed-by-dataset comparisons and had lower NLL in five. For PatchCamelyon seed 43, ConvPass alone achieved 91.0% accuracy, compared with 89.5% for selective averaging.
 
-In the SVHN pilot with 20% corrupted training labels, ConvPass accuracy fell from 90.0% to 83.0%, and SSF fell from 91.0% to 77.5%, on the same clean validation images. The LoRA run did not complete. These results cover single-model sensitivity, not the effect of label noise on the ensemble.
+With 20% corrupted training labels on SVHN, ConvPass accuracy fell from 90.0% to 83.0%, and SSF fell from 91.0% to 77.5%, on the same clean validation images. At a 25% target fallback rate, ConvPass followed by SSF reached 91.5% accuracy with clean training labels and 82.83% with noisy training labels. Under noise, it had slightly lower Brier and slightly higher NLL than ConvPass alone. The three-expert noisy ensemble remains unevaluated because the LoRA run did not complete. The paired comparison covers one training seed and one corruption mask.
 
-The experiments reuse development validation for pair selection and evaluation. We did not evaluate the final test sets. Fallback rates count additional model calls and do not measure latency.
+On the frozen SVHN test of 26,032 images, selective fusion and always-on averaging both round to 91.68% mean accuracy across three training seeds. Selective makes 1.256 calls per image compared with 2.000 for always-on, with NLL of 0.2885 versus 0.2869. Matched random reaches 90.77% at the same call budget as selective. The PatchCamelyon mirror test was withheld after the split audit found an exact training overlap. The label-noise results and pair screening use development validation. Calls per image measure the number of forward passes.
 
-[Baseline metrics](results/checkpoint2/baselines/metrics.csv) · [Results by training seed](results/checkpoint2/confirmation/metrics_by_training_seed.csv) · [Label-noise results](results/label_noise/svhn/analysis/calibration.csv)
+[Baseline metrics](results/checkpoint2/baselines/metrics.csv) · [Results by training seed](results/checkpoint2/confirmation/metrics_by_training_seed.csv) · [SVHN test](results/checkpoint2/holdout/svhn-test-per-seed.csv) · [Label-noise routing results](results/label_noise/svhn/pairwise/strategy_summary.csv)
 
 ## Reproduce the analysis
 
@@ -29,6 +31,7 @@ source .venv/bin/activate
 python -m pip install -r requirements-analysis.txt
 python scripts/checkpoint2_analysis.py
 python scripts/analyze_svhn_label_noise.py
+python scripts/analyze_svhn_label_noise.py --pairwise
 ```
 
 For interactive review, register the environment as a notebook kernel:

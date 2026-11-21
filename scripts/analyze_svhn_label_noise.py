@@ -1,4 +1,4 @@
-"""Compare routing controls on clean SVHN validation using saved epoch-100 logits."""
+"""Compare clean and label-noise SVHN experiments using saved epoch-100 logits."""
 
 import argparse
 import hashlib
@@ -9,13 +9,27 @@ import pandas as pd
 
 from checkpoint2_analysis import load_run, write_json
 from calibration_routing_pilot import ROUTING_SEEDS, _threshold_for_budget, softmax
-from multi_pair_pilot import calibrate, matched_random_mask, metric_row, stable_seed
+from multi_pair_pilot import calibrate, evaluate_pairs, matched_random_mask, metric_row, stable_seed
 from run_svhn_label_noise import METHODS, INIT, NOISE_SEED, SPLITS, corrupt, read
 
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = 0.25
+PAIR = ("convpass", "ssf")
 MEASURES = ("accuracy", "nll", "brier", "fallback_fraction", "forward_passes_per_image")
+
+
+def corruption_checks(audit, manifest_path):
+    manifest = read(manifest_path)
+    training = [(row["path"], row["label"]) for row in audit["development_records"][SPLITS[0]]]
+    noisy_labels, expected_changes = corrupt(training)
+    noisy_split = "".join(f"{path} {label}\n" for path, label in noisy_labels).encode()
+    if (manifest["seed"] != NOISE_SEED or manifest["changed_rows"] != 160
+            or manifest["changes"] != expected_changes or manifest["clean_split_sha256"] != {
+                name: audit["splits"][name]["list_sha256"] for name in SPLITS}
+            or manifest["noisy_train_sha256"] != hashlib.sha256(noisy_split).hexdigest()):
+        raise ValueError("Corruption manifest disagrees with the audited training split and fixed seed")
+    return {"manifest": manifest, "sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest()}
 
 
 def load_noisy(path, checks, clean, audit):
@@ -41,6 +55,9 @@ def load_noisy(path, checks, clean, audit):
                 or not np.array_equal(a["image_paths"], clean["paths"])
                 or set(a.files) != set(b.files) or any(not np.array_equal(a[k], b[k]) for k in a.files)):
             raise ValueError(f"Noisy logits or image order differ: {method}")
+    accuracy = 100 * (logits.argmax(axis=1) == clean["targets"]).mean()
+    if abs(accuracy - result["last_epoch_validation_top1_percent"]) > 1e-6:
+        raise ValueError(f"Noisy accuracy disagrees with stored logits: {method}")
     return {"logits": logits, "result": result}
 
 
@@ -112,16 +129,7 @@ def build(root, noisy, output):
     noise_summary = []
     manifest_path = noisy / "corruption.json"
     if present or manifest_path.is_file():
-        manifest = read(manifest_path)
-        training = [(row["path"], row["label"]) for row in audit["development_records"][SPLITS[0]]]
-        noisy_labels, expected_changes = corrupt(training)
-        noisy_split = "".join(f"{path} {label}\n" for path, label in noisy_labels).encode()
-        if (manifest["seed"] != NOISE_SEED or manifest["changed_rows"] != 160
-                or manifest["changes"] != expected_changes or manifest["clean_split_sha256"] != {
-                    name: audit["splits"][name]["list_sha256"] for name in SPLITS}
-                or manifest["noisy_train_sha256"] != hashlib.sha256(noisy_split).hexdigest()):
-            raise ValueError("Corruption manifest disagrees with the audited training split and fixed seed")
-        checks = {"manifest": manifest, "sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest()}
+        checks = corruption_checks(audit, manifest_path)
     if present:
         noise_runs = {m: load_noisy(noisy / m, checks, clean[m], audit) for m in present}
         noise_summary = [{"method": m, "accuracy": noise_runs[m]["result"]["last_epoch_validation_top1_percent"] / 100}
@@ -149,9 +157,55 @@ def build(root, noisy, output):
                output / "status.json")
 
 
+def build_pairwise(root, noisy, output):
+    audit = read(root / "results/dataset_audits/svhn_validation.json")
+    clean = {method: load_run(root, "svhn", method, 42, audit) for method in PAIR}
+    checks = corruption_checks(audit, noisy / "corruption.json")
+    corrupted = {method: load_noisy(noisy / method, checks, clean[method], audit) for method in PAIR}
+    first, second = PAIR
+    targets, paths = (clean[first][key] for key in ("targets", "paths"))
+    scores, diagnostics = [], []
+    for noise, runs in ((0, clean), (20, corrupted)):
+        data = {"dataset": "svhn", "subset": "validation", "runs": runs, "targets": targets,
+                "ordered_paths": paths}
+        caches, _, _, _, _ = calibrate(data, PAIR)
+        rows, _, _ = evaluate_pairs(data, caches, [PAIR], ["averaging"], rates=(BUDGET,))
+        for row in rows:
+            strategy = row["strategy"]
+            fallback = 0.0 if strategy in {"calibrated_first", "calibrated_second"} else row["fallback_fraction"]
+            scores.append({"training_noise_percent": noise, "split_seed": row["split_seed"],
+                           "strategy": strategy, "routing_seed": row["routing_seed"],
+                           **{key: row[key] for key in ("accuracy", "nll", "brier")},
+                           "fallback_fraction": fallback, "forward_passes_per_image": 1 + fallback})
+            if strategy == "confidence_routing":
+                diagnostics.append({"training_noise_percent": noise, "split_seed": row["split_seed"],
+                                    **{key: row[key] for key in ("fallback_count", "errors_fixed",
+                                         "correct_predictions_broken", "selected_errors_not_fixed",
+                                         "first_errors_missed")}})
+
+    output.mkdir(parents=True, exist_ok=True)
+    scores = pd.DataFrame(scores)
+    groups = ["training_noise_percent", "strategy", "split_seed"]
+    by_split = scores.groupby(groups)[list(MEASURES)].mean()
+    scores.to_csv(output / "scores_by_split_and_routing_seed.csv", index=False)
+    by_split.groupby(level=[0, 1]).mean().to_csv(output / "strategy_summary.csv")
+    pd.DataFrame(diagnostics).to_csv(output / "gate_diagnostics.csv", index=False)
+    write_json({"dataset": "svhn", "validation_n": len(targets), "training_seed": 42,
+                "calibration_split_seeds": sorted(scores["split_seed"].unique().tolist()),
+                "corruption_seed": NOISE_SEED, "corruption_manifest_sha256": checks["sha256"],
+                "first_method": first, "second_method": second, "fallback_rule": "averaging",
+                "target_fallback_fraction": BUDGET, "matched_random_draws_per_split": len(ROUTING_SEEDS),
+                "training_noise_percent": [0, 20], "final_test_used": False}, output / "status.json")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--noisy", type=Path, default=ROOT / "results/label_noise/svhn/runs")
-    parser.add_argument("--output", type=Path, default=ROOT / "results/label_noise/svhn/analysis")
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--pairwise", action="store_true", help="Compare ConvPass → SSF at 0%% and 20%% label noise")
     args = parser.parse_args()
-    build(ROOT, args.noisy, args.output)
+    output_root = ROOT / "results/label_noise/svhn"
+    if args.pairwise:
+        build_pairwise(ROOT, args.noisy, args.output or output_root / "pairwise")
+    else:
+        build(ROOT, args.noisy, args.output or output_root / "analysis")

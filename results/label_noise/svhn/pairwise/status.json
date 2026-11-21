@@ -1,0 +1,22 @@
+{
+  "dataset": "svhn",
+  "validation_n": 200,
+  "training_seed": 42,
+  "calibration_split_seeds": [
+    42,
+    43,
+    44
+  ],
+  "corruption_seed": 2026,
+  "corruption_manifest_sha256": "4951b5810ed00956dceca9c1a846e5daa9656b2b45600d7016988b8b6dcfab87",
+  "first_method": "convpass",
+  "second_method": "ssf",
+  "fallback_rule": "averaging",
+  "target_fallback_fraction": 0.25,
+  "matched_random_draws_per_split": 20,
+  "training_noise_percent": [
+    0,
+    20
+  ],
+  "final_test_used": false
+}
